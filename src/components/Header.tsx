@@ -58,42 +58,45 @@ export default function Header() {
         }}
         animate={hidden ? "hidden" : "visible"}
         transition={{ duration: 0.35, ease: "easeInOut" }}
-        className={`fixed top-0 left-0 w-full p-6 flex justify-between md:justify-end items-center z-50 transition-colors duration-300 ${textColorClass}`}
+        className={`fixed top-0 left-0 w-full p-6 flex justify-between md:justify-between items-center z-50 transition-colors duration-300 ${isMenuOpen ? 'text-off-white' : ''}`}
       >
-        {/* Mobile Logo/Indicator (Optional but good for balanced feel when menu is on right) */}
-        <div className="md:hidden font-display font-bold tracking-tighter text-xl">
+        {/* Logo - Still uses mix-blend for the 50/50 split */}
+        <Link 
+          to="/"
+          className={`font-display font-bold tracking-tighter text-2xl transition-colors mix-blend-difference text-off-white hover:opacity-70`}
+        >
           EQ
-        </div>
+        </Link>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex gap-6 text-lg tracking-tight uppercase font-bold">
+        {/* Desktop Navigation - Follows theme detection */}
+        <nav className={`hidden md:flex gap-6 text-lg tracking-tight uppercase font-bold ${textColorClass}`}>
           {navItems.map((item) => (
             <Link 
               key={item} 
               to="/" 
-              className={`font-bold text-lg tracking-tight transition-colors uppercase ${textColorClass} ${hoverColorClass}`}
+              className={`font-bold text-lg tracking-tight transition-colors uppercase ${hoverColorClass}`}
             >
               {item}
             </Link>
           ))}
           <button 
             onClick={() => setIsContactOpen(true)}
-            className={`font-bold text-lg tracking-tight transition-colors uppercase cursor-pointer ${textColorClass} ${hoverColorClass}`}
+            className={`font-bold text-lg tracking-tight transition-colors uppercase cursor-pointer ${hoverColorClass}`}
           >
             Fale Comigo
           </button>
         </nav>
 
-        {/* Mobile Menu Button */}
+        {/* Mobile Menu Button - Follows theme detection */}
         <button 
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="md:hidden z-50 p-2"
+          className={`md:hidden z-50 p-2 ${isMenuOpen ? 'text-off-white' : textColorClass}`}
           aria-label="Toggle menu"
         >
           <div className="w-8 h-4 flex flex-col justify-between items-end">
-            <span className={`h-0.5 transition-all duration-300 ${isMenuOpen ? 'w-8 rotate-45 translate-y-[7px]' : 'w-8'} ${isDark ? 'bg-off-white' : 'bg-rich-black'}`}></span>
-            <span className={`h-0.5 transition-all duration-300 ${isMenuOpen ? 'opacity-0' : 'w-6'} ${isDark ? 'bg-off-white' : 'bg-rich-black'}`}></span>
-            <span className={`h-0.5 transition-all duration-300 ${isMenuOpen ? 'w-8 -rotate-45 -translate-y-[7px]' : 'w-4'} ${isDark ? 'bg-off-white' : 'bg-rich-black'}`}></span>
+            <span className={`h-0.5 transition-all duration-300 bg-current ${isMenuOpen ? 'w-8 rotate-45 translate-y-[7px]' : 'w-8'}`}></span>
+            <span className={`h-0.5 transition-all duration-300 bg-current ${isMenuOpen ? 'opacity-0' : 'w-6'}`}></span>
+            <span className={`h-0.5 transition-all duration-300 bg-current ${isMenuOpen ? 'w-8 -rotate-45 -translate-y-[7px]' : 'w-4'}`}></span>
           </div>
         </button>
       </motion.header>

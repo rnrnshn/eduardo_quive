@@ -1,41 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import { Link } from '@tanstack/react-router'
 import useEmblaCarousel from 'embla-carousel-react'
-
-const posts = [
-  {
-    id: 1,
-    title: "A COR DA TUA SOMBRA, romance de Eduardo Quive publicado no Brasil",
-    image: "/post-1.png",
-    author: "Eduardo Quive",
-    readTime: "5 min leitura",
-    category: "Lançamento"
-  },
-  {
-    id: 2,
-    title: "Filhos do Oceano, de Ruth Bañón e as paisagens da memória",
-    image: "/post-2.jpg",
-    author: "Eduardo Quive",
-    readTime: "4 min leitura",
-    category: "Resenha"
-  },
-  {
-    id: 3,
-    title: "Quando o belo se rende à natureza",
-    image: "/post-3.jpg",
-    author: "Eduardo Quive",
-    readTime: "3 min leitura",
-    category: "Ensaio"
-  },
-  {
-    id: 4,
-    title: "Vozes da Lusofonia: Um olhar sobre o futuro",
-    image: "/post-1.png",
-    author: "Eduardo Quive",
-    readTime: "6 min leitura",
-    category: "Entrevista"
-  }
-]
+import { blogPosts } from '@/constants/blogData'
 
 export default function BlogGrid() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start', loop: true })
@@ -110,10 +76,11 @@ export default function BlogGrid() {
         {/* Carousel */}
         <div className="overflow-hidden p-1 -m-1" ref={emblaRef}>
           <div className="flex -ml-6">
-            {posts.map((post) => (
+            {blogPosts.map((post) => (
               <div className="flex-[0_0_100%] md:flex-[0_0_40%] pl-6 min-w-0" key={post.id}>
                 <Link 
-                  to="/"
+                  to="/blog/$postId"
+                  params={{ postId: post.id.toString() }}
                   className="group block relative h-[600px] w-full overflow-hidden rounded-none"
                 >
                   {/* Background Image */}
@@ -161,3 +128,4 @@ export default function BlogGrid() {
     </section>
   )
 }
+
