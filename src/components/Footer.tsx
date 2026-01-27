@@ -42,7 +42,7 @@ export default function Footer() {
               <h3 className="font-sans text-xs text-gray-500 uppercase tracking-[0.2em]">Navegação</h3>
               <nav className="flex flex-col gap-3 font-sans text-gray-300">
                 <Link to="/" className="hover:text-off-white transition-colors text-lg">Início</Link>
-                <Link to="/" className="hover:text-off-white transition-colors text-lg">Sobre</Link>
+                <Link to="/biografia" className="hover:text-off-white transition-colors text-lg">Sobre</Link>
                 <Link to="/" className="hover:text-off-white transition-colors text-lg">Livros</Link>
                 <Link to="/" className="hover:text-off-white transition-colors text-lg">Blog</Link>
                 <Link to="/" className="hover:text-off-white transition-colors text-lg">Eventos</Link>
