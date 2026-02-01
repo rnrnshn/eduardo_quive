@@ -1,5 +1,5 @@
 export const ENDPOINTS = {
-  articles: {
+  posts: {
     list: (params?: Record<string, string | number>) => {
       const searchParams = new URLSearchParams({
         _embed: 'wp:term,wp:featuredmedia,author',
@@ -7,10 +7,10 @@ export const ENDPOINTS = {
         page: String(params?.page || 1),
         ...params
       })
-      return `/articles?${searchParams}`
+      return `/posts?${searchParams}`
     },
-    byId: (id: number) => `/articles/${id}?_embed=wp:term,wp:featuredmedia,author`,
-    bySlug: (slug: string) => `/articles?slug=${slug}&_embed=wp:term,wp:featuredmedia,author`,
+    byId: (id: number) => `/posts/${id}?_embed=wp:term,wp:featuredmedia,author`,
+    bySlug: (slug: string) => `/posts?slug=${slug}&_embed=wp:term,wp:featuredmedia,author`,
   },
   books: {
     list: (params?: Record<string, string | number>) => {

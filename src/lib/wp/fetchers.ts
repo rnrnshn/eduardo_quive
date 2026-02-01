@@ -6,7 +6,7 @@ import type { WordPressError } from './client'
 
 export async function fetchArticles(params?: Record<string, string | number>): Promise<WPArticle[]> {
   try {
-    const wpPosts: WPPost[] = await wpFetch(ENDPOINTS.articles.list(params))
+    const wpPosts: WPPost[] = await wpFetch(ENDPOINTS.posts.list(params))
     return transformArticles(wpPosts)
   } catch (error) {
     console.error('Error fetching articles:', error)
@@ -23,8 +23,8 @@ export async function fetchArticles(params?: Record<string, string | number>): P
 export async function fetchArticle(idOrSlug: number | string): Promise<WPArticle | null> {
   try {
     const endpoint = typeof idOrSlug === 'number'
-      ? ENDPOINTS.articles.byId(idOrSlug)
-      : ENDPOINTS.articles.bySlug(idOrSlug)
+      ? ENDPOINTS.posts.byId(idOrSlug)
+      : ENDPOINTS.posts.bySlug(idOrSlug)
 
     const wpPosts: WPPost[] = await wpFetch(endpoint)
 
