@@ -1,21 +1,18 @@
 import { useScroll, useTransform, motion, MotionValue } from 'framer-motion'
 import { useRef } from 'react'
 import { Link } from '@tanstack/react-router'
-
-const content = [
-  "Publicou o livro de contos Mutiladas (Catalogus, 2024), Para onde foram os vivos (poesia, Alcance Editores, 2022); Lágrimas da Vida Sorrisos da Morte (poesia, Literatas, 2012).",
-  "É Co-autor do livro Estórias para além do tempo – Paulina Chiziane entre Moçambique e Brasil (Ensaios, Instituto Guimarães Rosa Maputo, 2023); Co-autor do livro Brasil & África – Laços Poéticos (Poesia, Editora Letras, 2014); co-organizador das colectâneas Contos e crónicas para ler em casa vol. I e vol. II (Literatas, 2020). Em 2020 co-organizou o livro O Abismo aos pés (Literatas), com entrevista a 25 escritores lusófonos sobre a iminência do fim do mundo, em pleno pico da pandemia do novo coronavírus.",
-  "Em 2022 esteve em residência literária em Lisboa, após vencer o programa de Residência Literária Maputo-Lisboa, do Camões – Centro Cultural Português em Maputo e da Câmara Municipal de Lisboa."
-]
+import { useRouteContext } from '@tanstack/react-router'
 
 export default function LiteratureReveal() {
+  const { biography } = useRouteContext({ from: '/' })
   const containerRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end end'],
   })
 
-  const words = content.join(' ').split(' ')
+  const content = biography?.careerSection || ''
+  const words = content.split(' ')
 
   return (
     <section 
@@ -41,8 +38,8 @@ export default function LiteratureReveal() {
         </div>
         
         <div className="mt-12 md:mt-8 flex">
-          <Link 
-            to="/" 
+          <Link
+            to="/biografia"
             className="text-lg md:text-2xl font-bold underline decoration-2 underline-offset-4 hover:text-gray-500 transition-colors"
           >
             Leia Mais

@@ -1,39 +1,8 @@
-const pressItems = [
-  {
-    id: 1,
-    publication: "O País",
-    date: "12 Março 2025",
-    title: "Eduardo Quive e a reinvenção da narrativa moçambicana contemporânea",
-    excerpt: "Uma conversa profunda sobre as raízes culturais e o futuro da literatura nos países lusófonos.",
-    url: "#"
-  },
-  {
-    id: 2,
-    publication: "Jornal Notícias",
-    date: "28 Fevereiro 2025",
-    title: "'A Cor da Tua Sombra': Uma obra-prima de sensibilidade",
-    excerpt: "O novo romance de Quive surpreende pela leveza com que trata temas densos da sociedade actual.",
-    url: "#"
-  },
-  {
-    id: 3,
-    publication: "Rádio Moçambique",
-    date: "15 Janeiro 2025",
-    title: "Entrevista: O papel do escritor na preservação da memória colectiva",
-    excerpt: "Eduardo Quive discute como a ficção pode servir de documento histórico emocional.",
-    url: "#"
-  },
-  {
-    id: 4,
-    publication: "Revista Literatas",
-    date: "05 Dezembro 2024",
-    title: "As vozes que ecoam: Perfil de Eduardo Quive",
-    excerpt: "Análise da trajectória do autor, desde os primeiros contos até ao reconhecimento internacional.",
-    url: "#"
-  }
-]
+import { useRouteContext } from '@tanstack/react-router'
 
 export default function PressList() {
+  const { press } = useRouteContext({ from: '/' })
+  const pressItems = press || []
   return (
     <section className="w-full bg-off-white text-rich-black py-24 px-6 flex flex-col justify-center" data-theme="light">
       <div className="w-full max-w-[1800px] mx-auto">

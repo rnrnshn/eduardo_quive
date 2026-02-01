@@ -1,12 +1,17 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { useEffect } from 'react'
+import { fetchBiography } from '@/lib/wp/fetchers'
 
 export const Route = createFileRoute('/biografia')({
+  loader: async () => {
+    return await fetchBiography()
+  },
   component: BiografiaPage,
 })
 
 function BiografiaPage() {
+  const biography = Route.useLoaderData()
   const { scrollY } = useScroll()
   const y1 = useTransform(scrollY, [0, 800], [0, 200])
   const y2 = useTransform(scrollY, [1200, 3000], [0, 250])
@@ -71,26 +76,9 @@ function BiografiaPage() {
               Jornalismo <br className="hidden md:block"/> & Comunicação
             </h2>
           </div>
-          <div className="lg:col-span-8 flex flex-col gap-8 text-lg md:text-xl text-gray-700 leading-relaxed font-sans">
-            <p className="font-bold text-rich-black">
-              Começou por volta de 2010 o trabalho na área de comunicação, dedicando-se ao jornalismo cultural a partir de 2012, com passagens por jornais, revistas e até por televisão.
-            </p>
-            <p>
-              Durante dois anos dedicou-se à crítica literária na imprensa moçambicana, publicando nos jornais <span className="font-bold underline cursor-default">Sol</span>, <span className="font-bold underline cursor-default">Notícias</span> e <span className="font-bold underline cursor-default">Debate</span>.
-            </p>
-            <p>
-              Editou o <span className="text-rich-black font-semibold">RADAR</span> – Newsletter semanal sobre Arte, Criatividade e Inovação do festival Maputo Fast Forward, escreve para a <span className="text-rich-black font-semibold">ÍNDICO</span> – revista de bordo das Linhas Aéreas de Moçambique e é coordenador de comunicação da Fundação Fernando Leite Couto.
-            </p>
-            <p>
-              Tem artigos publicados igualmente na imprensa estrangeira, sobre artes e literatura, entre elas, a revista africana de literatura <span className="italic">Britle Paper</span>, na revista <span className="italic">Sábado</span> e <span className="italic">Buala</span>, de Portugal.
-            </p>
-            <p>
-              Foi director editorial da revista <span className="text-rich-black font-semibold uppercase tracking-widest text-sm">Literatas</span> e desde 2018 que é empreendedor na área da Cultura. E é co-fundador da plataforma de autores moçambicanos e editora <span className="text-amber-600 font-bold uppercase">Catalogus</span>.
-            </p>
-            <p className="border-l-4 border-amber-500 pl-6 py-2 italic text-gray-500">
-               Em 2018 colaborou na organização da exposição internacional World Press Photo para a sua realização em Maputo, trazida pela Embaixada do Reino dos Países Baixos.
-            </p>
-          </div>
+          <div className="lg:col-span-8 flex flex-col gap-8 text-lg md:text-xl text-gray-700 leading-relaxed font-sans"
+               dangerouslySetInnerHTML={{ __html: biography?.careerSection || '' }}
+          />
         </div>
       </section>
 
@@ -122,33 +110,17 @@ function BiografiaPage() {
               Literatura
             </h2>
           </div>
-          <div className="lg:col-span-8 flex flex-col gap-12">
-            <div className="space-y-12 text-lg md:text-xl text-gray-400 leading-relaxed font-sans">
-              <div className="space-y-4">
-                 <h4 className="text-off-white font-bold uppercase tracking-widest text-xs">Publicações</h4>
-                 <p>
-                   Publicou o livro de contos <span className="text-off-white italic font-bold">Mutiladas</span> (Catalogus, 2024), <span className="text-off-white italic font-bold">Para onde foram os vivos</span> (poesia, Alcance Editores, 2022); <span className="text-off-white italic font-bold">Lágrimas da Vida Sorrisos da Morte</span> (poesia, Literatas, 2012).
-                 </p>
-                 <p>
-                   É Co-autor do livro <span className="text-off-white italic">Estórias para além do tempo – Paulina Chiziane entre Moçambique e Brasil</span> (Ensaios, 2023); Co-autor do livro <span className="text-off-white italic">Brasil & África – Laços Poéticos</span> (Poesia, 2014); co-organizador das colectâneas <span className="text-off-white italic">Contos e crónicas para ler em casa vol. I e vol. II</span> (2020).
-                 </p>
-                 <p>
-                    Em 2020 co-organizou o livro <span className="text-off-white italic uppercase tracking-tighter">O Abismo aos pés</span>, com entrevista a 25 escritores lusófonos sobre a iminência do fim do mundo.
-                 </p>
-              </div>
+           <div className="lg:col-span-8 flex flex-col gap-12">
+             <div className="space-y-12 text-lg md:text-xl text-gray-400 leading-relaxed font-sans">
+               <div className="space-y-4">
+                  <h4 className="text-off-white font-bold uppercase tracking-widest text-xs">Publicações</h4>
+                  <div dangerouslySetInnerHTML={{ __html: biography?.publicationsSection || '' }} />
+               </div>
 
-              <div className="space-y-4 pt-12 border-t border-white/10">
-                 <h4 className="text-off-white font-bold uppercase tracking-widest text-xs">Residências & Programas</h4>
-                 <p>
-                   Em 2022 esteve em residência literária em Lisboa, após vencer o programa de Residência Literária Maputo-Lisboa, do Camões – Centro Cultural Português em Maputo e da Câmara Municipal de Lisboa.
-                 </p>
-                 <p>
-                   Em 2024 participou do Workshop de Escrita Criativo da <span className="text-amber-500 font-bold uppercase">Canex</span>, liderado por <span className="text-off-white font-bold underline decoration-amber-500 underline-offset-4">Chimamanda Ngozi Adichie</span>, no Gana.
-                 </p>
-                 <p>
-                   Em 2025 foi autor residente na <span className="text-off-white">Sangam House</span>, em Bangalore, <span className="text-off-white font-bold tracking-widest">Índia</span>, onde foi concluir o seu romance.
-                 </p>
-              </div>
+               <div className="space-y-4 pt-12 border-t border-white/10">
+                  <h4 className="text-off-white font-bold uppercase tracking-widest text-xs">Residências & Programas</h4>
+                  <div dangerouslySetInnerHTML={{ __html: biography?.residenciesSection || '' }} />
+               </div>
               
               <div className="space-y-4 pt-12 border-t border-white/10">
                  <h4 className="text-off-white font-bold uppercase tracking-widest text-xs">Atuação Expandida</h4>
@@ -182,28 +154,43 @@ function BiografiaPage() {
                 </div>
              </div>
              
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16">
-                <div className="aspect-video bg-gray-100 relative overflow-hidden shadow-2xl">
-                   <iframe 
-                      className="w-full h-full"
-                      src="https://www.youtube.com/embed/KoAv9QNt6wA" 
-                      title="Eduardo Quive Video 1"
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                      allowFullScreen
-                   ></iframe>
-                </div>
-                <div className="aspect-video bg-gray-100 relative overflow-hidden shadow-2xl">
-                   <iframe 
-                      className="w-full h-full"
-                      src="https://www.youtube.com/embed/Q-kjskRJVDI" 
-                      title="Eduardo Quive Video 2"
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                      allowFullScreen
-                   ></iframe>
-                </div>
-             </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16">
+                 {biography?.videos?.slice(0, 2).map((video, index) => (
+                   <div key={index} className="aspect-video bg-gray-100 relative overflow-hidden shadow-2xl">
+                     <iframe
+                       className="w-full h-full"
+                       src={`https://www.youtube.com/embed/${video.youtube_id}`}
+                       title={video.title}
+                       frameBorder="0"
+                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                       allowFullScreen
+                     />
+                   </div>
+                 )) || (
+                   <>
+                     <div className="aspect-video bg-gray-100 relative overflow-hidden shadow-2xl">
+                       <iframe
+                         className="w-full h-full"
+                         src="https://www.youtube.com/embed/KoAv9QNt6wA"
+                         title="Eduardo Quive Video 1"
+                         frameBorder="0"
+                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                         allowFullScreen
+                       />
+                     </div>
+                     <div className="aspect-video bg-gray-100 relative overflow-hidden shadow-2xl">
+                       <iframe
+                         className="w-full h-full"
+                         src="https://www.youtube.com/embed/Q-kjskRJVDI"
+                         title="Eduardo Quive Video 2"
+                         frameBorder="0"
+                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                         allowFullScreen
+                       />
+                     </div>
+                   </>
+                 )}
+              </div>
           </div>
       </section>
     </main>

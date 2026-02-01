@@ -1,9 +1,10 @@
 import { useState, useCallback, useEffect } from 'react'
 import { Link } from '@tanstack/react-router'
 import useEmblaCarousel from 'embla-carousel-react'
-import { blogPosts } from '@/constants/blogData'
+import { useRouteContext } from '@tanstack/react-router'
 
 export default function BlogGrid() {
+  const { articles } = useRouteContext({ from: '/' })
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start', loop: true })
   const [canScrollPrev, setCanScrollPrev] = useState(false)
   const [canScrollNext, setCanScrollNext] = useState(false)
@@ -22,6 +23,8 @@ export default function BlogGrid() {
     emblaApi.on('reInit', onSelect)
     emblaApi.on('select', onSelect)
   }, [emblaApi, onSelect])
+
+  const posts = articles || []
 
   return (
     <section className="w-full bg-rich-black text-off-white py-24 px-6 min-h-screen flex flex-col justify-center" data-theme="dark">
@@ -73,16 +76,16 @@ export default function BlogGrid() {
           </div>
         </div>
 
-        {/* Carousel */}
+         {/* Carousel */}
         <div className="overflow-hidden p-1 -m-1" ref={emblaRef}>
           <div className="flex -ml-6">
-            {blogPosts.map((post) => (
+            {posts.map((post) => (
               <div className="flex-[0_0_100%] md:flex-[0_0_40%] pl-6 min-w-0" key={post.id}>
-                <Link 
-                  to="/blog/$postId"
-                  params={{ postId: post.id.toString() }}
-                  className="group block relative h-[600px] w-full overflow-hidden rounded-none"
-                >
+                 <Link 
+                   to="/blog/$postId"
+                   params={{ postId: post.slug }}
+                   className="group block relative h-[600px] w-full overflow-hidden rounded-none"
+                 >
                   {/* Background Image */}
                   <div className="absolute inset-0">
                     <img 

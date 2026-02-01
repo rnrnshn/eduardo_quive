@@ -1,16 +1,19 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { blogPosts } from '@/constants/blogData'
 import { motion } from 'framer-motion'
 import { Link } from '@tanstack/react-router'
 import { useEffect } from 'react'
+import { fetchArticle } from '@/lib/wp/fetchers'
 
 export const Route = createFileRoute('/blog/$postId')({
+  loader: async ({ params }) => {
+    return await fetchArticle(params.postId)
+  },
   component: PostPage,
 })
 
 function PostPage() {
   const { postId } = Route.useParams()
-  const post = blogPosts.find((p) => p.id === Number(postId))
+  const post = Route.useLoaderData()
 
   useEffect(() => {
     window.scrollTo(0, 0)

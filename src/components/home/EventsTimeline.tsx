@@ -1,59 +1,17 @@
-const events = [
-  {
-    id: 1,
-    title: "Feira do Livro de Maputo",
-    location: "Maputo, Moçambique",
-    date: "2026-03-15",
-    description: "Lançamento do novo romance e sessão de autógrafos",
-    type: "upcoming"
-  },
-  {
-    id: 2,
-    title: "Encontro de Escritores Lusófonos",
-    location: "Lisboa, Portugal",
-    date: "2026-02-20",
-    description: "Painel sobre literatura africana contemporânea",
-    type: "upcoming"
-  },
-  {
-    id: 3,
-    title: "Bienal do Livro de São Paulo",
-    location: "São Paulo, Brasil",
-    date: "2025-08-10",
-    description: "Apresentação de 'A Cor da Tua Sombra' ao público brasileiro",
-    type: "past"
-  },
-  {
-    id: 4,
-    title: "Festival Literário de Maputo",
-    location: "Maputo, Moçambique",
-    date: "2025-06-05",
-    description: "Conversa sobre o processo criativo e influências literárias",
-    type: "past"
-  },
-  {
-    id: 5,
-    title: "Congresso Internacional de Literatura",
-    location: "Luanda, Angola",
-    date: "2024-11-18",
-    description: "Keynote sobre a nova geração de escritores moçambicanos",
-    type: "past"
-  }
-]
+import { useRouteContext } from '@tanstack/react-router'
 
 function formatDate(dateString: string): string {
   const date = new Date(dateString)
-  return date.toLocaleDateString('pt-PT', { 
-    day: 'numeric', 
-    month: 'long', 
-    year: 'numeric' 
+  return date.toLocaleDateString('pt-PT', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
   })
 }
 
 export default function EventsTimeline() {
-  const upcomingEvents = events.filter(e => e.type === 'upcoming').sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-  const pastEvents = events.filter(e => e.type === 'past').sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-  const sortedEvents = [...upcomingEvents, ...pastEvents]
+  const { events } = useRouteContext({ from: '/' })
+  const sortedEvents = events || []
 
   return (
     <section className="w-full bg-rich-black text-off-white py-24 px-6 min-h-screen flex flex-col justify-center" data-theme="dark">
