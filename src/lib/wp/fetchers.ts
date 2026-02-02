@@ -1,4 +1,4 @@
-import { wpFetch } from './client'
+import { wpFetch, wpFetchWithHeaders } from './client'
 import { ENDPOINTS } from './endpoints'
 import { transformArticle, transformArticles, transformBooks, transformEvents, transformPressItems, transformBiography } from './transformers'
 import type { WPArticle, WPBook, WPEvent, WPPress, WPBiography, WPPost } from './types'
@@ -14,6 +14,24 @@ export async function fetchArticles(params?: Record<string, string | number>): P
       const wpError = error as WordPressError
       if (wpError.statusCode === 404) {
         return []
+      }
+    }
+    throw error
+  }
+}
+
+export async function fetchArticlesWithPagination(params?: Record<string, string | number>): Promise<{ articles: WPArticle[]; total: number; totalPages: number }> {
+  try {
+    const { data, headers } = await wpFetchWithHeaders<WPPost[]>(ENDPOINTS.posts.list(params))
+    const total = Number(headers.get('X-WP-Total') || 0)
+    const totalPages = Number(headers.get('X-WP-TotalPages') || 1)
+    return { articles: transformArticles(data), total, totalPages }
+  } catch (error) {
+    console.error('Error fetching articles:', error)
+    if (error instanceof Error && error.name === 'WordPressError') {
+      const wpError = error as WordPressError
+      if (wpError.statusCode === 404) {
+        return { articles: [], total: 0, totalPages: 1 }
       }
     }
     throw error

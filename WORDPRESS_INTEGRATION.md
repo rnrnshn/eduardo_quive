@@ -44,12 +44,27 @@ Your site uses 4 content types:
 
 | Content Type | WordPress Type | API Endpoint |
 |---------------|----------------|--------------|
-| Articles/Blog | Built-in Posts | `/posts` |
-| Books | Custom Post Type | `/books` |
-| Events | Custom Post Type | `/events` |
-| Press | Custom Post Type | `/press` |
+| Articles/Blog (Artigos/Blog) | Built-in Posts | `/posts` |
+| Books (Livros) | Custom Post Type | `/books` |
+| Events (Eventos) | Custom Post Type | `/events` |
+| Press (Imprensa) | Custom Post Type | `/press` |
 
 **Note:** Articles use WordPress built-in **Posts** - no CPT needed! Just create regular blog posts.
+
+---
+
+## 🇵🇹 Tipos de Conteúdo em Português
+
+O site utiliza 4 tipos de conteúdo em WordPress:
+
+| Tipo de Conteúdo | Tipo WordPress | Endpoint API |
+|------------------|----------------|--------------|
+| Artigos/Blog | Posts nativos | `/posts` |
+| Livros | Custom Post Type | `/books` |
+| Eventos | Custom Post Type | `/events` |
+| Imprensa | Custom Post Type | `/press` |
+
+**Nota:** Artigos utilizam os **Posts** nativos do WordPress - não é necessário CPT! Basta criar posts de blog normais.
 
 ---
 
@@ -57,12 +72,12 @@ Your site uses 4 content types:
 
 Navigate to **CPT UI → Add/Edit Post Types** in WordPress admin.
 
-#### 1. Books
+#### 1. Books (Livros)
 
 **Settings:**
 - **Post Type Slug**: `books`
-- **Plural Label**: Books
-- **Singular Label**: Book
+- **Plural Label**: Livros (or Books)
+- **Singular Label**: Livro (or Book)
 - **Public**: True
 - **Publicly Queryable**: True
 - **Show UI**: True
@@ -79,12 +94,12 @@ Navigate to **CPT UI → Add/Edit Post Types** in WordPress admin.
 
 ---
 
-#### 3. Events
+#### 3. Events (Eventos)
 
 **Settings:**
 - **Post Type Slug**: `events`
-- **Plural Label**: Events
-- **Singular Label**: Event
+- **Plural Label**: Eventos (or Events)
+- **Singular Label**: Evento (or Event)
 - **Public**: True
 - **Publicly Queryable**: True
 - **Show UI**: True
@@ -101,12 +116,12 @@ Navigate to **CPT UI → Add/Edit Post Types** in WordPress admin.
 
 ---
 
-#### 4. Press
+#### 4. Press (Imprensa)
 
 **Settings:**
 - **Post Type Slug**: `press`
-- **Plural Label**: Press
-- **Singular Label**: Press Item
+- **Plural Label**: Imprensa (or Press)
+- **Singular Label**: Item de Imprensa (or Press Item)
 - **Public**: True
 - **Publicly Queryable**: True
 - **Show UI**: True
@@ -126,86 +141,86 @@ Navigate to **CPT UI → Add/Edit Post Types** in WordPress admin.
 
 Navigate to **Custom Fields → Add New** in WordPress admin.
 
-#### Field Group 1: Book Details
+#### Field Group 1: Book Details (Detalhes do Livro)
 
 **Location:**
 - Post type → Books
 
 **Fields:**
 
-| Field Name | Field Type | Field Key | Instructions | Required |
+| Field Name (Label) | Field Type | Field Key | Instructions (Instruções) | Required |
 |------------|------------|-----------|--------------|-----------|
-| Year | Text | `field_year` | Publication year (e.g., 2024) | Yes |
-| Genre | Text | `field_genre` | Literary genre (e.g., Poesia, Contos) | Yes |
-| Author | Text | `field_author` | Author name (defaults to "Eduardo Quive") | No |
-| Publisher | Text | `field_publisher` | Publisher name | No |
-| Description | Textarea | `field_description` | Book description | Yes |
-| Availability | Text | `field_availability` | Where to buy (e.g., "Disponível nas livrarias") | No |
-| Full Title | Text | `field_full_title` | Complete title if subtitle exists | No |
-| Buying Info | Repeater | `field_buying_info` | List of purchase options | No |
+| Year (Ano) | Text | `field_year` | Publication year (e.g., 2024) | Yes |
+| Genre (Género) | Text | `field_genre` | Literary genre (e.g., Poesia, Contos) | Yes |
+| Author (Autor) | Text | `field_author` | Author name (defaults to "Eduardo Quive") | No |
+| Publisher (Editora) | Text | `field_publisher` | Publisher name | No |
+| Description (Descrição) | Textarea | `field_description` | Book description | Yes |
+| Availability (Disponibilidade) | Text | `field_availability` | Where to buy (e.g., "Disponível nas livrarias") | No |
+| Full Title (Título Completo) | Text | `field_full_title` | Complete title if subtitle exists | No |
+| Buying Info (Informações de Compra) | Repeater | `field_buying_info` | List of purchase options | No |
 
 **Buying Info Repeater Subfields:**
-| Field Name | Field Type |
+| Field Name (Label) | Field Type |
 |------------|------------|
-| Link Label | Text |
+| Link Label (Etiqueta do Link) | Text |
 
 ---
 
-#### Field Group 2: Event Details
+#### Field Group 2: Event Details (Detalhes do Evento)
 
 **Location:**
 - Post type → Events
 
 **Fields:**
 
-| Field Name | Field Type | Field Key | Instructions | Required |
+| Field Name (Label) | Field Type | Field Key | Instructions (Instruções) | Required |
 |------------|------------|-----------|--------------|-----------|
-| Location | Text | `field_location` | Event location (e.g., "Maputo, Moçambique") | Yes |
-| Date | Date Picker | `field_date` | Event date | Yes |
-| Description | Textarea | `field_description` | Event description | Yes |
-| Type | Select | `field_type` | Event type | Yes |
+| Location (Local) | Text | `field_location` | Event location (e.g., "Maputo, Moçambique") | Yes |
+| Date (Data) | Date Picker | `field_date` | Event date | Yes |
+| Description (Descrição) | Textarea | `field_description` | Event description | Yes |
+| Type (Tipo) | Select | `field_type` | Event type | Yes |
 
-**Type Field Choices:**
-- `upcoming` : Upcoming
-- `past` : Past
+**Type Field Choices (Opções de Tipo):**
+- `upcoming` : Próximos (Upcoming)
+- `past` : Passados (Past)
 
 ---
 
-#### Field Group 3: Press Details
+#### Field Group 3: Press Details (Detalhes de Imprensa)
 
 **Location:**
 - Post type → Press
 
 **Fields:**
 
-| Field Name | Field Type | Field Key | Instructions | Required |
+| Field Name (Label) | Field Type | Field Key | Instructions (Instruções) | Required |
 |------------|------------|-----------|--------------|-----------|
-| Publication | Text | `field_publication` | Publication name (e.g., "O País") | Yes |
-| Date | Date Picker | `field_date` | Publication date | Yes |
+| Publication (Publicação) | Text | `field_publication` | Publication name (e.g., "O País") | Yes |
+| Date (Data) | Date Picker | `field_date` | Publication date | Yes |
 | URL | URL | `field_url` | Link to the article | Yes |
-| Excerpt | Textarea | `field_excerpt` | Brief excerpt | Yes |
+| Excerpt (Resumo) | Textarea | `field_excerpt` | Brief excerpt | Yes |
 
 ---
 
-#### Field Group 4: Biography
+#### Field Group 4: Biography (Biografia)
 
 **Location:**
 - Page → Page Template → Biografia
 
 **Fields:**
 
-| Field Name | Field Type | Field Key | Instructions | Required |
+| Field Name (Label) | Field Type | Field Key | Instructions (Instruções) | Required |
 |------------|------------|-----------|--------------|-----------|
-| Career Section | WYSIWYG | `field_career_section` | Journalism and career content | Yes |
-| Publications Section | WYSIWYG | `field_publications_section` | Literary publications | Yes |
-| Residencies Section | WYSIWYG | `field_residencies_section` | Residencies and programs | Yes |
-| Videos | Repeater | `field_videos` | YouTube videos | No |
+| Career Section (Secção de Carreira) | WYSIWYG | `field_career_section` | Journalism and career content | Yes |
+| Publications Section (Secção de Publicações) | WYSIWYG | `field_publications_section` | Literary publications | Yes |
+| Residencies Section (Secção de Residências) | WYSIWYG | `field_residencies_section` | Residencies and programs | Yes |
+| Videos (Vídeos) | Repeater | `field_videos` | YouTube videos | No |
 
-**Videos Repeater Subfields:**
-| Field Name | Field Type | Instructions |
+**Videos Repeater Subfields (Subcampos de Vídeos):**
+| Field Name (Label) | Field Type | Instructions (Instruções) |
 |------------|------------|--------------|
 | YouTube ID | Text | YouTube video ID (e.g., KoAv9QNt6wA from https://www.youtube.com/watch?v=KoAv9QNt6wA) |
-| Title | Text | Video title |
+| Title (Título) | Text | Video title |
 
 ---
 
@@ -250,59 +265,59 @@ VITE_WP_SITE_URL=https://your-wordpress-site.com
 
 ## 📦 Content Migration
 
-### Step 1: Migrate Articles (Use WordPress Posts)
+### Step 1: Migrate Articles (Migrar Artigos - Usar Posts do WordPress)
 
 For each article in your hardcoded data (`src/constants/blogData.ts`):
 
-1. Navigate to **Posts → Add New** in WordPress
-2. Enter title
-3. Add content in editor
-4. Set featured image
-5. Select category
-6. Set publish date
-7. Publish
+1. Navigate to **Posts → Adicionar Novo** in WordPress
+2. Enter title (inserir título)
+3. Add content in editor (adicionar conteúdo no editor)
+4. Set featured image (definir imagem destacada)
+5. Select category (selecionar categoria)
+6. Set publish date (definir data de publicação)
+7. Publish (publicar)
 
-**Content Mapping:**
-- `title` → Post Title
-- `image` → Featured Image
-- `author` → (use default, set via WP user)
-- `date` → Publish Date
-- `readTime` → (auto-calculated from word count)
-- `category` → Category
-- `content` → Post Content
+**Mapeamento de Conteúdo (Content Mapping):**
+- `title` → Post Title (Título do Post)
+- `image` → Featured Image (Imagem Destacada)
+- `author` → (use default, set via WP user) - (usar padrão, definir via utilizador WP)
+- `date` → Publish Date (Data de Publicação)
+- `readTime` → (auto-calculated from word count) - (calculado automaticamente pelo número de palavras)
+- `category` → Category (Categoria)
+- `content` → Post Content (Conteúdo do Post)
 
-**Note:** Use WordPress built-in Posts for articles - no custom post type needed!
+**Nota:** Use WordPress built-in Posts for articles - no custom post type needed! (Utilize os Posts nativos do WordPress para artigos - não é necessário custom post type!)
 
 ---
 
-### Step 2: Migrate Books
+### Step 2: Migrate Books (Migrar Livros)
 
 For each book in your hardcoded data:
 
-1. Navigate to **Books → Add New** in WordPress
-2. Enter title
-3. Upload book cover as featured image
-4. Fill in ACF fields:
-   - Year
-   - Genre
-   - Author
-   - Publisher
-   - Description
-   - Availability
-   - Full Title (if applicable)
-   - Buying Info (if applicable)
-5. Publish
+1. Navigate to **Books → Adicionar Novo** in WordPress
+2. Enter title (inserir título)
+3. Upload book cover as featured image (carregar capa do livro como imagem destacada)
+4. Fill in ACF fields (preencher campos ACF):
+   - Year (Ano)
+   - Genre (Género)
+   - Author (Autor)
+   - Publisher (Editora)
+   - Description (Descrição)
+   - Availability (Disponibilidade)
+   - Full Title (Título Completo) (se aplicável)
+   - Buying Info (Informações de Compra) (se aplicável)
+5. Publish (publicar)
 
-**Example:**
+**Exemplo (Example):**
 ```
-Title: Mutiladas
-Year: 2023
-Genre: Contos
-Author: Eduardo Quive
-Publisher: Catalogus
-Description: [paste full description]
-Availability: Disponível nas livrarias em Maputo.
-Buying Info:
+Title (Título): Mutiladas
+Year (Ano): 2023
+Genre (Género): Contos
+Author (Autor): Eduardo Quive
+Publisher (Editora): Catalogus
+Description (Descrição): [paste full description]
+Availability (Disponibilidade): Disponível nas livrarias em Maputo.
+Buying Info (Informações de Compra):
   - Livraria Mabuku (Maputo | Matola)
   - Livraria Sequoia (Sommershield)
   - Livraria Ethale Publishing
@@ -311,66 +326,66 @@ Buying Info:
 
 ---
 
-### Step 3: Migrate Events
+### Step 3: Migrate Events (Migrar Eventos)
 
 For each event:
 
-1. Navigate to **Events → Add New** in WordPress
-2. Enter title
-3. Add featured image (optional)
-4. Fill in ACF fields:
-   - Location
-   - Date
-   - Description
-   - Type (upcoming or past)
-5. Publish
+1. Navigate to **Events → Adicionar Novo** in WordPress
+2. Enter title (inserir título)
+3. Add featured image (optional) (adicionar imagem destacada - opcional)
+4. Fill in ACF fields (preencher campos ACF):
+   - Location (Local)
+   - Date (Data)
+   - Description (Descrição)
+   - Type (Tipo) - upcoming ou past
+5. Publish (publicar)
 
-**Important:**
-- Set Type correctly based on whether the event is in the past or future
-- The frontend automatically sorts events (upcoming first, then past)
+**Importante (Important):**
+- Set Type correctly based on whether the event is in the past or future (definir Tipo corretamente com base se o evento está no passado ou futuro)
+- The frontend automatically sorts events (upcoming first, then past) (o frontend ordena automaticamente os eventos - próximos primeiro, depois passados)
 
 ---
 
-### Step 4: Migrate Press Items
+### Step 4: Migrate Press Items (Migrar Itens de Imprensa)
 
 For each press item:
 
-1. Navigate to **Press → Add New** in WordPress
-2. Enter title
-3. Fill in ACF fields:
-   - Publication
-   - Date
+1. Navigate to **Press → Adicionar Novo** in WordPress
+2. Enter title (inserir título)
+3. Fill in ACF fields (preencher campos ACF):
+   - Publication (Publicação)
+   - Date (Data)
    - URL
-   - Excerpt
-4. Publish
+   - Excerpt (Resumo)
+4. Publish (publicar)
 
-**Example:**
+**Exemplo (Example):**
 ```
-Title: Eduardo Quive e a reinvenção da narrativa moçambicana contemporânea
-Publication: O País
-Date: 2025-03-12
+Title (Título): Eduardo Quive e a reinvenção da narrativa moçambicana contemporânea
+Publication (Publicação): O País
+Date (Data): 2025-03-12
 URL: https://o-pais.mz/article-link
-Excerpt: Uma conversa profunda sobre as raízes culturais e o futuro da literatura nos países lusófonos.
+Excerpt (Resumo): Uma conversa profunda sobre as raízes culturais e o futuro da literatura nos países lusófonos.
 ```
 
 ---
 
-### Step 5: Configure Biography
+### Step 5: Configure Biography (Configurar Biografia)
 
-1. Navigate to **Pages → Biografia**
-2. Edit the page
-3. Fill in ACF fields:
-   - **Career Section**: Paste journalism/career content
-   - **Publications Section**: Paste publications content
-   - **Residencies Section**: Paste residencies content
-   - **Videos**: Add YouTube videos
+1. Navigate to **Páginas → Biografia**
+2. Edit the page (editar a página)
+3. Fill in ACF fields (preencher campos ACF):
+   - **Career Section (Secção de Carreira)**: Paste journalism/career content (colar conteúdo de jornalismo/carreira)
+   - **Publications Section (Secção de Publicações)**: Paste publications content (colar conteúdo de publicações)
+   - **Residencies Section (Secção de Residências)**: Paste residencies content (colar conteúdo de residências)
+   - **Videos (Vídeos)**: Add YouTube videos (adicionar vídeos YouTube)
      - YouTube ID: `KoAv9QNt6wA`
-     - Title: `Eduardo Quive Video 1`
-4. Update
+     - Title (Título): `Eduardo Quive Video 1`
+4. Update (atualizar)
 
-**Content Sources:**
-- Current content is in `biografia.tsx` and `src/components/home/LiteratureReveal.tsx`
-- Extract text and paste into appropriate WYSIWYG fields
+**Fontes de Conteúdo (Content Sources):**
+- Current content is in `biografia.tsx` and `src/components/home/LiteratureReveal.tsx` (o conteúdo atual está em)
+- Extract text and paste into appropriate WYSIWYG fields (extrair texto e colar nos campos WYSIWYG apropriados)
 
 ---
 
@@ -555,25 +570,151 @@ API response doesn't include `acf` object
 
 ---
 
-## 🆘 Troubleshooting
+## 🆘 Troubleshooting (Solução de Problemas)
 
-If you encounter issues:
+If you encounter issues (Se encontrar problemas):
 
-1. **Check browser console** for JavaScript errors
-2. **Check Network tab** in DevTools for failed API requests
-3. **Verify WordPress API** is accessible
-4. **Check environment variables** are set correctly
-5. **Clear caches** (WordPress cache, browser cache, build cache)
+1. **Check browser console** for JavaScript errors (verificar consola do browser para erros JavaScript)
+2. **Check Network tab** in DevTools for failed API requests (verificar aba Network no DevTools para pedidos de API falhados)
+3. **Verify WordPress API** is accessible (verificar se a API WordPress está acessível)
+4. **Check environment variables** are set correctly (verificar se as variáveis de ambiente estão definidas corretamente)
+5. **Clear caches** (WordPress cache, browser cache, build cache) (limpar caches)
 
 ---
 
-## 📞 Need Help?
+## 📞 Need Help? (Precisa de Ajuda?)
 
-If you need assistance with any step:
+If you need assistance with any step (Se precisar de ajuda com qualquer passo):
 
-1. Review this document carefully
-2. Check WordPress and frontend logs
-3. Test API endpoints independently
-4. Refer to plugin documentation
+1. Review this document carefully (rever este documento cuidadosamente)
+2. Check WordPress and frontend logs (verificar logs WordPress e frontend)
+3. Test API endpoints independently (testar endpoints API independentemente)
+4. Refer to plugin documentation (consultar documentação dos plugins)
 
-Good luck with your WordPress headless integration! 🎉
+Good luck with your WordPress headless integration! 🎉 (Boa sorte com a integração WordPress headless!)
+
+---
+
+## 📚 Referência Completa de Tipos de Conteúdo (Português)
+
+### 1. Artigos (Articles/Blog)
+
+**Tipo:** Posts nativos do WordPress  
+**Endpoint:** `/posts`  
+**Sem necessidade de Custom Post Type!**
+
+**Campos Disponíveis:**
+- Título (Title)
+- Conteúdo (Content) - editor WYSIWYG
+- Imagem Destacada (Featured Image)
+- Categoria (Category)
+- Data de Publicação (Publish Date)
+- Autor (Author) - via utilizador WordPress
+
+**Como Criar:**
+1. Ir para **Posts → Adicionar Novo**
+2. Preencher título e conteúdo
+3. Adicionar imagem destacada
+4. Selecionar categoria
+5. Definir data
+6. Publicar
+
+---
+
+### 2. Livros (Books)
+
+**Tipo:** Custom Post Type  
+**Endpoint:** `/books`
+
+**Campos ACF:**
+- **Ano (Year)** - Texto - Ano de publicação
+- **Género (Genre)** - Texto - Género literário (ex: Poesia, Contos)
+- **Autor (Author)** - Texto - Nome do autor (padrão: "Eduardo Quive")
+- **Editora (Publisher)** - Texto - Nome da editora
+- **Descrição (Description)** - Textarea - Descrição do livro
+- **Disponibilidade (Availability)** - Texto - Onde comprar (ex: "Disponível nas livrarias")
+- **Título Completo (Full Title)** - Texto - Título completo se houver subtítulo (opcional)
+- **Informações de Compra (Buying Info)** - Repeater - Lista de opções de compra (opcional)
+
+**Como Criar:**
+1. Ir para **Livros → Adicionar Novo**
+2. Inserir título
+3. Carregar capa do livro como imagem destacada
+4. Preencher campos ACF
+5. Publicar
+
+---
+
+### 3. Eventos (Events)
+
+**Tipo:** Custom Post Type  
+**Endpoint:** `/events`
+
+**Campos ACF:**
+- **Local (Location)** - Texto - Local do evento (ex: "Maputo, Moçambique")
+- **Data (Date)** - Date Picker - Data do evento
+- **Descrição (Description)** - Textarea - Descrição do evento
+- **Tipo (Type)** - Select - Tipo do evento:
+  - `upcoming` (Próximos)
+  - `past` (Passados)
+
+**Como Criar:**
+1. Ir para **Eventos → Adicionar Novo**
+2. Inserir título
+3. Adicionar imagem destacada (opcional)
+4. Preencher campos ACF
+5. Definir Tipo corretamente (próximo ou passado)
+6. Publicar
+
+---
+
+### 4. Imprensa (Press)
+
+**Tipo:** Custom Post Type  
+**Endpoint:** `/press`
+
+**Campos ACF:**
+- **Publicação (Publication)** - Texto - Nome da publicação (ex: "O País")
+- **Data (Date)** - Date Picker - Data de publicação
+- **URL** - URL - Link para o artigo
+- **Resumo (Excerpt)** - Textarea - Resumo breve
+
+**Como Criar:**
+1. Ir para **Imprensa → Adicionar Novo**
+2. Inserir título
+3. Preencher campos ACF
+4. Publicar
+
+---
+
+### 5. Biografia (Biography Page)
+
+**Tipo:** Página do WordPress  
+**Endpoint:** `/pages?slug=biografia`
+
+**Campos ACF:**
+- **Secção de Carreira (Career Section)** - WYSIWYG - Conteúdo de jornalismo e carreira
+- **Secção de Publicações (Publications Section)** - WYSIWYG - Publicações literárias
+- **Secção de Residências (Residencies Section)** - WYSIWYG - Residências e programas
+- **Vídeos (Videos)** - Repeater - Vídeos YouTube:
+  - YouTube ID - Texto - ID do vídeo YouTube
+  - Título (Title) - Texto - Título do vídeo
+
+**Como Criar:**
+1. Criar página com slug `biografia`
+2. Editar página
+3. Preencher campos ACF
+4. Adicionar vídeos no campo Vídeos
+5. Atualizar
+
+---
+
+## 🎯 Resumo Rápido (Quick Summary)
+
+| Tipo de Conteúdo | WP Type | Endpoint | CPT Necessário? | ACF Necessário? |
+|------------------|---------|-----------|-----------------|-----------------|
+| Artigos (Articles) | Posts | `/posts` | ❌ Não | ❌ Não |
+| Livros (Books) | CPT | `/books` | ✅ Sim | ✅ Sim |
+| Eventos (Events) | CPT | `/events` | ✅ Sim | ✅ Sim |
+| Imprensa (Press) | CPT | `/press` | ✅ Sim | ✅ Sim |
+| Biografia (Biography) | Page | `/pages` | ❌ Não | ✅ Sim |

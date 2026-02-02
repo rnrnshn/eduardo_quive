@@ -2,9 +2,12 @@ import { useState, useCallback, useEffect } from 'react'
 import { Link } from '@tanstack/react-router'
 import useEmblaCarousel from 'embla-carousel-react'
 import { useRouteContext } from '@tanstack/react-router'
+import type { WPArticle } from '@/lib/wp/types'
+
+type RouteContext = { articles?: WPArticle[] }
 
 export default function BlogGrid() {
-  const { articles } = useRouteContext({ from: '/' })
+  const { articles } = useRouteContext({ from: '/' }) as RouteContext
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start', loop: true })
   const [canScrollPrev, setCanScrollPrev] = useState(false)
   const [canScrollNext, setCanScrollNext] = useState(false)
@@ -65,7 +68,7 @@ export default function BlogGrid() {
             </div>
 
             <Link 
-              to="/" 
+              to="/blog" 
               className="group flex items-center gap-2 font-sans text-lg uppercase tracking-widest text-off-white hover:text-gray-300 transition-colors pb-2 md:pb-4"
             >
               <span>Ver todos</span>
@@ -79,7 +82,7 @@ export default function BlogGrid() {
          {/* Carousel */}
         <div className="overflow-hidden p-1 -m-1" ref={emblaRef}>
           <div className="flex -ml-6">
-            {posts.map((post) => (
+            {posts.map((post: WPArticle) => (
               <div className="flex-[0_0_100%] md:flex-[0_0_40%] pl-6 min-w-0" key={post.id}>
                  <Link 
                    to="/blog/$postId"

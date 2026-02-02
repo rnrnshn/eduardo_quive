@@ -44,11 +44,10 @@ export interface WPMedia {
   author: number
   comment_status: string
   ping_status: string
-  alt_text: string
+  alt_text?: string
   caption: {
     rendered: string
   }
-  alt_text?: string
   media_type: string
   mime_type: string
   media_details: {
@@ -183,4 +182,10 @@ export interface WPApiError {
 export interface WPApiResponse<T> {
   data?: T
   error?: WPApiError
+}
+
+export interface PaginatedResponse<T> {
+  data: T[]
+  total: number
+  totalPages: number
 }
