@@ -1,10 +1,10 @@
 import { useScroll, useTransform, motion, MotionValue } from 'framer-motion'
 import { useRef } from 'react'
-import { Link } from '@tanstack/react-router'
-import { useRouteContext } from '@tanstack/react-router'
+import { Link, useLoaderData } from '@tanstack/react-router'
+import type { HomeLoaderData } from '@/lib/wp/types'
 
 export default function LiteratureReveal() {
-  const { biography } = useRouteContext({ from: '/' })
+  const { biography } = useLoaderData({ from: '/' }) as HomeLoaderData
   const containerRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({
     target: containerRef,

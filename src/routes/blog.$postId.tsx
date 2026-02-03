@@ -32,14 +32,24 @@ function PostPage() {
     <main className="bg-off-white min-h-screen">
       {/* Hero Section */}
       <section className="relative h-[75vh] w-full overflow-hidden" data-theme="dark">
-        <motion.img 
-          initial={{ scale: 1.1, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 1.2, ease: "easeOut" }}
-          src={post.image} 
-          alt={post.title} 
-          className="w-full h-full object-cover grayscale-[20%]"
-        />
+        {post.image ? (
+          <motion.img 
+            initial={{ scale: 1.1, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 1.2, ease: "easeOut" }}
+            src={post.image} 
+            alt={post.title} 
+            className="w-full h-full object-cover grayscale-[20%]"
+          />
+        ) : (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="w-full h-full bg-rich-black"
+            aria-hidden="true"
+          />
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-rich-black via-rich-black/50 to-transparent" />
         
         <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-24">
@@ -81,13 +91,10 @@ function PostPage() {
             </div>
           </div>
 
-          <article className="prose prose-xl prose-rich-black max-w-none font-sans text-gray-700 leading-relaxed space-y-8 text-left">
-            {post.content.split('\n\n').map((paragraph, i) => (
-              <p key={i} className="first-letter:text-5xl first-letter:font-display first-letter:float-left first-letter:mr-3 first-letter:mt-1 first-letter:text-rich-black">
-                {paragraph.trim()}
-              </p>
-            ))}
-          </article>
+          <article
+            className="prose prose-xl prose-rich-black max-w-none font-sans text-gray-700 leading-relaxed space-y-8 text-left"
+            dangerouslySetInnerHTML={{ __html: post.content }}
+          />
 
           {/* Back Button */}
           <div className="mt-24 pt-12 border-t border-gray-100 flex justify-center">

@@ -18,13 +18,12 @@ export const ENDPOINTS = {
         _embed: 'wp:featuredmedia',
         per_page: String(params?.per_page || 100),
         order: 'asc',
-        orderby: 'year',
         ...params
       })
-      return `/books?${searchParams}`
+      return `/livro?${searchParams}`
     },
-    byId: (id: number) => `/books/${id}?_embed=wp:featuredmedia`,
-    bySlug: (slug: string) => `/books?slug=${slug}&_embed=wp:featuredmedia`,
+    byId: (id: number) => `/livro/${id}?_embed=wp:featuredmedia`,
+    bySlug: (slug: string) => `/livro?slug=${slug}&_embed=wp:featuredmedia`,
   },
   events: {
     list: (params?: Record<string, string | number>) => {
@@ -33,10 +32,10 @@ export const ENDPOINTS = {
         per_page: String(params?.per_page || 100),
         ...params
       })
-      return `/events?${searchParams}`
+      return `/evento?${searchParams}`
     },
-    byId: (id: number) => `/events/${id}?_embed=wp:featuredmedia`,
-    bySlug: (slug: string) => `/events?slug=${slug}&_embed=wp:featuredmedia`,
+    byId: (id: number) => `/evento/${id}?_embed=wp:featuredmedia`,
+    bySlug: (slug: string) => `/evento?slug=${slug}&_embed=wp:featuredmedia`,
     upcoming: (params?: Record<string, string | number>) => {
       const searchParams = new URLSearchParams({
         _embed: 'wp:featuredmedia',
@@ -44,7 +43,7 @@ export const ENDPOINTS = {
         event_type: 'upcoming',
         ...params
       })
-      return `/events?${searchParams}`
+      return `/evento?${searchParams}`
     },
     past: (params?: Record<string, string | number>) => {
       const searchParams = new URLSearchParams({
@@ -53,7 +52,7 @@ export const ENDPOINTS = {
         event_type: 'past',
         ...params
       })
-      return `/events?${searchParams}`
+      return `/evento?${searchParams}`
     },
   },
   press: {
@@ -64,10 +63,10 @@ export const ENDPOINTS = {
         orderby: 'date',
         ...params
       })
-      return `/press?${searchParams}`
+      return `/imprensa?${searchParams}`
     },
-    byId: (id: number) => `/press/${id}`,
-    bySlug: (slug: string) => `/press?slug=${slug}`,
+    byId: (id: number) => `/imprensa/${id}`,
+    bySlug: (slug: string) => `/imprensa?slug=${slug}`,
   },
   pages: {
     list: (params?: Record<string, string | number>) => {

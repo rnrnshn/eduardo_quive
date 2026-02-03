@@ -1,21 +1,66 @@
 import { wpFetch, wpFetchWithHeaders } from './client'
 import { ENDPOINTS } from './endpoints'
 import { transformArticle, transformArticles, transformBooks, transformEvents, transformPressItems, transformBiography } from './transformers'
-import type { WPArticle, WPBook, WPEvent, WPPress, WPBiography, WPPost } from './types'
-import type { WordPressError } from './client'
+import type { WPArticle, WPBook, WPEvent, WPPress, WPBiography, WPPost, WPMedia } from './types'
+type WordPressErrorLike = {
+  name?: string
+  code?: string
+  statusCode?: number
+}
+
+function isWordPressErrorLike(error: unknown): error is WordPressErrorLike {
+  return typeof error === 'object' && error !== null && ('code' in error || 'statusCode' in error || 'name' in error)
+}
+
+function isMissingRoute(error: WordPressErrorLike): boolean {
+  return error.statusCode === 404 || error.code === 'rest_no_route'
+}
+
+function getEmbeddedMediaUrl(post: WPPost): string | null {
+  const url = (post as any)?._embedded?.['wp:featuredmedia']?.[0]?.source_url
+  return typeof url === 'string' && url.length > 0 ? url : null
+}
+
+const invalidMediaIds = new Set<number>()
+
+async function resolveFeaturedMedia(posts: WPPost[]): Promise<Record<number, string>> {
+  const ids = posts
+    .map((post) => post.featured_media)
+    .filter((id) => typeof id === 'number' && id > 0)
+    .filter((id) => !invalidMediaIds.has(id))
+    .filter((id, index, list) => list.indexOf(id) === index)
+    .filter((id) => !posts.some((post) => post.featured_media === id && getEmbeddedMediaUrl(post)))
+
+  if (ids.length === 0) return {}
+
+  const entries = await Promise.all(ids.map(async (id) => {
+    try {
+      const media = await wpFetch<WPMedia>(ENDPOINTS.media.byId(id))
+      return [id, media.source_url || ''] as const
+    } catch (error) {
+      if (isWordPressErrorLike(error) && (error.code === 'rest_post_invalid_id' || error.statusCode === 404)) {
+        invalidMediaIds.add(id)
+        return [id, ''] as const
+      }
+      console.error('Error fetching media:', error)
+      return [id, ''] as const
+    }
+  }))
+
+  return entries.reduce<Record<number, string>>((acc, [id, url]) => {
+    if (url) acc[id] = url
+    return acc
+  }, {})
+}
 
 export async function fetchArticles(params?: Record<string, string | number>): Promise<WPArticle[]> {
   try {
     const wpPosts: WPPost[] = await wpFetch(ENDPOINTS.posts.list(params))
-    return transformArticles(wpPosts)
+    const mediaById = await resolveFeaturedMedia(wpPosts)
+    return transformArticles(wpPosts, mediaById)
   } catch (error) {
     console.error('Error fetching articles:', error)
-    if (error instanceof Error && error.name === 'WordPressError') {
-      const wpError = error as WordPressError
-      if (wpError.statusCode === 404) {
-        return []
-      }
-    }
+    if (isWordPressErrorLike(error) && isMissingRoute(error)) return []
     throw error
   }
 }
@@ -23,17 +68,13 @@ export async function fetchArticles(params?: Record<string, string | number>): P
 export async function fetchArticlesWithPagination(params?: Record<string, string | number>): Promise<{ articles: WPArticle[]; total: number; totalPages: number }> {
   try {
     const { data, headers } = await wpFetchWithHeaders<WPPost[]>(ENDPOINTS.posts.list(params))
+    const mediaById = await resolveFeaturedMedia(data)
     const total = Number(headers.get('X-WP-Total') || 0)
     const totalPages = Number(headers.get('X-WP-TotalPages') || 1)
-    return { articles: transformArticles(data), total, totalPages }
+    return { articles: transformArticles(data, mediaById), total, totalPages }
   } catch (error) {
     console.error('Error fetching articles:', error)
-    if (error instanceof Error && error.name === 'WordPressError') {
-      const wpError = error as WordPressError
-      if (wpError.statusCode === 404) {
-        return { articles: [], total: 0, totalPages: 1 }
-      }
-    }
+    if (isWordPressErrorLike(error) && isMissingRoute(error)) return { articles: [], total: 0, totalPages: 1 }
     throw error
   }
 }
@@ -45,20 +86,17 @@ export async function fetchArticle(idOrSlug: number | string): Promise<WPArticle
       : ENDPOINTS.posts.bySlug(idOrSlug)
 
     const wpPosts: WPPost[] = await wpFetch(endpoint)
+    const postsArray = Array.isArray(wpPosts) ? wpPosts : [wpPosts as WPPost]
+    const mediaById = await resolveFeaturedMedia(postsArray)
 
     if (Array.isArray(wpPosts)) {
-      return wpPosts.length > 0 ? transformArticle(wpPosts[0]) : null
+      return wpPosts.length > 0 ? transformArticle(wpPosts[0], mediaById) : null
     }
 
-    return transformArticle(wpPosts as WPPost)
+    return transformArticle(wpPosts as WPPost, mediaById)
   } catch (error) {
     console.error('Error fetching article:', error)
-    if (error instanceof Error && error.name === 'WordPressError') {
-      const wpError = error as WordPressError
-      if (wpError.statusCode === 404) {
-        return null
-      }
-    }
+    if (isWordPressErrorLike(error) && isMissingRoute(error)) return null
     throw error
   }
 }
@@ -66,15 +104,11 @@ export async function fetchArticle(idOrSlug: number | string): Promise<WPArticle
 export async function fetchBooks(params?: Record<string, string | number>): Promise<WPBook[]> {
   try {
     const wpPosts: WPPost[] = await wpFetch(ENDPOINTS.books.list(params))
-    return transformBooks(wpPosts)
+    const mediaById = await resolveFeaturedMedia(wpPosts)
+    return transformBooks(wpPosts, mediaById)
   } catch (error) {
     console.error('Error fetching books:', error)
-    if (error instanceof Error && error.name === 'WordPressError') {
-      const wpError = error as WordPressError
-      if (wpError.statusCode === 404) {
-        return []
-      }
-    }
+    if (isWordPressErrorLike(error) && isMissingRoute(error)) return []
     throw error
   }
 }
@@ -86,20 +120,17 @@ export async function fetchBook(idOrSlug: number | string): Promise<WPBook | nul
       : ENDPOINTS.books.bySlug(idOrSlug)
 
     const wpPosts: WPPost[] = await wpFetch(endpoint)
+    const postsArray = Array.isArray(wpPosts) ? wpPosts : [wpPosts as WPPost]
+    const mediaById = await resolveFeaturedMedia(postsArray)
 
     if (Array.isArray(wpPosts)) {
-      return wpPosts.length > 0 ? transformBooks(wpPosts)[0] : null
+      return wpPosts.length > 0 ? transformBooks(wpPosts, mediaById)[0] : null
     }
 
-    return transformBooks([wpPosts as WPPost])[0]
+    return transformBooks([wpPosts as WPPost], mediaById)[0]
   } catch (error) {
     console.error('Error fetching book:', error)
-    if (error instanceof Error && error.name === 'WordPressError') {
-      const wpError = error as WordPressError
-      if (wpError.statusCode === 404) {
-        return null
-      }
-    }
+    if (isWordPressErrorLike(error) && isMissingRoute(error)) return null
     throw error
   }
 }
@@ -120,12 +151,7 @@ export async function fetchEvents(params?: Record<string, string | number>): Pro
     return [...upcoming, ...past]
   } catch (error) {
     console.error('Error fetching events:', error)
-    if (error instanceof Error && error.name === 'WordPressError') {
-      const wpError = error as WordPressError
-      if (wpError.statusCode === 404) {
-        return []
-      }
-    }
+    if (isWordPressErrorLike(error) && isMissingRoute(error)) return []
     throw error
   }
 }
@@ -145,12 +171,7 @@ export async function fetchEvent(idOrSlug: number | string): Promise<WPEvent | n
     return transformEvents([wpPosts as WPPost])[0]
   } catch (error) {
     console.error('Error fetching event:', error)
-    if (error instanceof Error && error.name === 'WordPressError') {
-      const wpError = error as WordPressError
-      if (wpError.statusCode === 404) {
-        return null
-      }
-    }
+    if (isWordPressErrorLike(error) && isMissingRoute(error)) return null
     throw error
   }
 }
@@ -161,12 +182,7 @@ export async function fetchPress(params?: Record<string, string | number>): Prom
     return transformPressItems(wpPosts)
   } catch (error) {
     console.error('Error fetching press items:', error)
-    if (error instanceof Error && error.name === 'WordPressError') {
-      const wpError = error as WordPressError
-      if (wpError.statusCode === 404) {
-        return []
-      }
-    }
+    if (isWordPressErrorLike(error) && isMissingRoute(error)) return []
     throw error
   }
 }
@@ -186,12 +202,7 @@ export async function fetchPressItem(idOrSlug: number | string): Promise<WPPress
     return transformPressItems([wpPosts as WPPost])[0]
   } catch (error) {
     console.error('Error fetching press item:', error)
-    if (error instanceof Error && error.name === 'WordPressError') {
-      const wpError = error as WordPressError
-      if (wpError.statusCode === 404) {
-        return null
-      }
-    }
+    if (isWordPressErrorLike(error) && isMissingRoute(error)) return null
     throw error
   }
 }
@@ -207,12 +218,7 @@ export async function fetchBiography(): Promise<WPBiography | null> {
     return null
   } catch (error) {
     console.error('Error fetching biography:', error)
-    if (error instanceof Error && error.name === 'WordPressError') {
-      const wpError = error as WordPressError
-      if (wpError.statusCode === 404) {
-        return null
-      }
-    }
+    if (isWordPressErrorLike(error) && isMissingRoute(error)) return null
     throw error
   }
 }
@@ -228,12 +234,7 @@ export async function fetchPage(slug: string): Promise<WPPost | null> {
     return null
   } catch (error) {
     console.error('Error fetching page:', error)
-    if (error instanceof Error && error.name === 'WordPressError') {
-      const wpError = error as WordPressError
-      if (wpError.statusCode === 404) {
-        return null
-      }
-    }
+    if (isWordPressErrorLike(error) && isMissingRoute(error)) return null
     throw error
   }
 }

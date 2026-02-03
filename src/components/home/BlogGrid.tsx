@@ -1,13 +1,10 @@
 import { useState, useCallback, useEffect } from 'react'
-import { Link } from '@tanstack/react-router'
+import { Link, useLoaderData } from '@tanstack/react-router'
 import useEmblaCarousel from 'embla-carousel-react'
-import { useRouteContext } from '@tanstack/react-router'
-import type { WPArticle } from '@/lib/wp/types'
-
-type RouteContext = { articles?: WPArticle[] }
+import type { HomeLoaderData } from '@/lib/wp/types'
 
 export default function BlogGrid() {
-  const { articles } = useRouteContext({ from: '/' }) as RouteContext
+  const { articles } = useLoaderData({ from: '/' }) as HomeLoaderData
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: 'start', loop: true })
   const [canScrollPrev, setCanScrollPrev] = useState(false)
   const [canScrollNext, setCanScrollNext] = useState(false)
@@ -30,7 +27,7 @@ export default function BlogGrid() {
   const posts = articles || []
 
   return (
-    <section className="w-full bg-rich-black text-off-white py-24 px-6 min-h-screen flex flex-col justify-center" data-theme="dark">
+    <section id="blog" className="w-full bg-rich-black text-off-white py-24 px-6 min-h-screen flex flex-col justify-center" data-theme="dark">
       <div className="w-full max-w-[1800px] mx-auto">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-8">
           <div className="max-w-2xl">
@@ -68,7 +65,8 @@ export default function BlogGrid() {
             </div>
 
             <Link 
-              to="/blog" 
+              to="/blog"
+              preload="intent"
               className="group flex items-center gap-2 font-sans text-lg uppercase tracking-widest text-off-white hover:text-gray-300 transition-colors pb-2 md:pb-4"
             >
               <span>Ver todos</span>
@@ -82,20 +80,25 @@ export default function BlogGrid() {
          {/* Carousel */}
         <div className="overflow-hidden p-1 -m-1" ref={emblaRef}>
           <div className="flex -ml-6">
-            {posts.map((post: WPArticle) => (
+            {posts.map((post) => (
               <div className="flex-[0_0_100%] md:flex-[0_0_40%] pl-6 min-w-0" key={post.id}>
                  <Link 
                    to="/blog/$postId"
                    params={{ postId: post.slug }}
+                   preload="intent"
                    className="group block relative h-[600px] w-full overflow-hidden rounded-none"
                  >
                   {/* Background Image */}
-                  <div className="absolute inset-0">
-                    <img 
-                      src={post.image} 
-                      alt={post.title} 
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 filter grayscale-[20%] group-hover:grayscale-0"
-                    />
+                  <div className="absolute inset-0 bg-rich-black">
+                    {post.image ? (
+                      <img 
+                        src={post.image} 
+                        alt={post.title} 
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 filter grayscale-[20%] group-hover:grayscale-0"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-rich-black" aria-hidden="true" />
+                    )}
                     {/* Gradient Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-80 group-hover:opacity-70 transition-opacity duration-500" />
                   </div>
@@ -134,4 +137,3 @@ export default function BlogGrid() {
     </section>
   )
 }
-

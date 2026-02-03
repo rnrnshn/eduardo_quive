@@ -47,7 +47,14 @@ export default function Header() {
   const textColorClass = isDark ? 'text-off-white' : 'text-rich-black'
   const hoverColorClass = isDark ? 'hover:text-amber-500' : 'hover:text-gray-500'
 
-  const navItems = ['Biografia', 'Blog', 'Livros', 'Curadoria', 'Eventos', 'Imprensa']
+  const navItems = [
+    { label: 'Biografia', to: '/biografia' },
+    { label: 'Blog', to: '/blog' },
+    { label: 'Livros', to: '/', hash: 'livros' },
+    { label: 'Curadoria', to: '/curadoria' },
+    { label: 'Eventos', to: '/', hash: 'eventos' },
+    { label: 'Imprensa', to: '/', hash: 'imprensa' },
+  ]
 
   return (
     <>
@@ -70,19 +77,15 @@ export default function Header() {
 
         {/* Desktop Navigation - Follows theme detection */}
         <nav className={`hidden md:flex gap-6 text-lg tracking-tight uppercase font-bold ${textColorClass}`}>
-          <Link 
-            to="/biografia"
-            className={`font-bold text-lg tracking-tight transition-colors uppercase ${hoverColorClass}`}
-          >
-            Biografia
-          </Link>
-          {navItems.filter(item => item !== 'Biografia').map((item) => (
+          {navItems.map((item) => (
             <Link 
-              key={item} 
-              to="/" 
+              key={item.label} 
+              to={item.to}
+              hash={item.hash}
+              preload="intent"
               className={`font-bold text-lg tracking-tight transition-colors uppercase ${hoverColorClass}`}
             >
-              {item}
+              {item.label}
             </Link>
           ))}
           <button 
@@ -115,21 +118,16 @@ export default function Header() {
         className="fixed inset-0 bg-rich-black z-[45] md:hidden flex flex-col p-8 pt-32"
       >
         <nav className="flex flex-col gap-8">
-          <Link 
-            to="/biografia" 
-            onClick={() => setIsMenuOpen(false)}
-            className="text-off-white font-display text-5xl font-bold tracking-tighter uppercase leading-none"
-          >
-            Biografia
-          </Link>
-          {navItems.filter(item => item !== 'Biografia').map((item) => (
+          {navItems.map((item) => (
             <Link 
-              key={item} 
-              to="/" 
+              key={item.label} 
+              to={item.to}
+              hash={item.hash}
+              preload="intent"
               onClick={() => setIsMenuOpen(false)}
               className="text-off-white font-display text-5xl font-bold tracking-tighter uppercase leading-none"
             >
-              {item}
+              {item.label}
             </Link>
           ))}
           <button 
@@ -156,4 +154,3 @@ export default function Header() {
     </>
   )
 }
-

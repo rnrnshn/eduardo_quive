@@ -171,6 +171,14 @@ export interface WPBiography {
   }[]
 }
 
+export type HomeLoaderData = {
+  articles: WPArticle[]
+  books: WPBook[]
+  events: WPEvent[]
+  press: WPPress[]
+  biography: WPBiography | null
+}
+
 export interface WPApiError {
   code: string
   message: string

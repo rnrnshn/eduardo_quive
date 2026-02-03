@@ -1,4 +1,5 @@
-import { useRouteContext } from '@tanstack/react-router'
+import { useLoaderData } from '@tanstack/react-router'
+import type { HomeLoaderData } from '@/lib/wp/types'
 
 function formatDate(dateString: string): string {
   const date = new Date(dateString)
@@ -10,11 +11,11 @@ function formatDate(dateString: string): string {
 }
 
 export default function EventsTimeline() {
-  const { events } = useRouteContext({ from: '/' })
+  const { events } = useLoaderData({ from: '/' }) as HomeLoaderData
   const sortedEvents = events || []
 
   return (
-    <section className="w-full bg-rich-black text-off-white py-24 px-6 min-h-screen flex flex-col justify-center" data-theme="dark">
+    <section id="eventos" className="w-full bg-rich-black text-off-white py-24 px-6 min-h-screen flex flex-col justify-center" data-theme="dark">
       <div className="w-full max-w-[1800px] mx-auto">
         <h2 className="font-display text-[10vw] md:text-[6vw] leading-none tracking-tighter mb-4 uppercase text-left">
           EVENTOS

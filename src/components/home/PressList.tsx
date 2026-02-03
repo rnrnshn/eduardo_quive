@@ -1,10 +1,11 @@
-import { useRouteContext } from '@tanstack/react-router'
+import { useLoaderData } from '@tanstack/react-router'
+import type { HomeLoaderData } from '@/lib/wp/types'
 
 export default function PressList() {
-  const { press } = useRouteContext({ from: '/' })
+  const { press } = useLoaderData({ from: '/' }) as HomeLoaderData
   const pressItems = press || []
   return (
-    <section className="w-full bg-off-white text-rich-black py-24 px-6 flex flex-col justify-center" data-theme="light">
+    <section id="imprensa" className="w-full bg-off-white text-rich-black py-24 px-6 flex flex-col justify-center" data-theme="light">
       <div className="w-full max-w-[1800px] mx-auto">
         <h2 className="font-display text-[10vw] md:text-[6vw] leading-none tracking-tighter mb-16 uppercase text-left border-b border-gray-200 pb-8">
           IMPRENSA

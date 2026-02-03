@@ -2,9 +2,13 @@ import type { WPPost, WPMedia, WPUser } from './types'
 import type { WPArticle, WPBook, WPEvent, WPPress, WPBiography } from './types'
 
 function stripHtml(html: string): string {
-  const tmp = document.createElement('DIV')
-  tmp.innerHTML = html
-  return tmp.textContent || tmp.innerText || ''
+  if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+    const tmp = document.createElement('DIV')
+    tmp.innerHTML = html
+    return tmp.textContent || tmp.innerText || ''
+  }
+
+  return html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim()
 }
 
 function formatDate(dateString: string): string {
@@ -30,6 +34,19 @@ function getImageUrl(post: WPPost, size: 'medium' | 'large' | 'full' = 'large'):
   return ''
 }
 
+function getFirstImageFromHtml(html: string): string {
+  if (!html) return ''
+  if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(html, 'text/html')
+    const img = doc.querySelector('img')
+    return img?.getAttribute('src') || ''
+  }
+
+  const match = html.match(/<img[^>]+src=["']([^"']+)["']/i)
+  return match?.[1] || ''
+}
+
 function getAuthorName(post: WPPost): string {
   if (post._embedded?.author?.[0]?.name) {
     return post._embedded.author[0].name
@@ -44,12 +61,15 @@ function getCategoryName(post: WPPost): string {
   return 'Artigo'
 }
 
-export function transformArticle(wpPost: WPPost): WPArticle {
+export function transformArticle(wpPost: WPPost, mediaById?: Record<number, string>): WPArticle {
+  const imageFromMedia = mediaById?.[wpPost.featured_media] || getImageUrl(wpPost, 'large')
+  const image = imageFromMedia || getFirstImageFromHtml(wpPost.content?.rendered || '')
+
   return {
     id: wpPost.id,
     title: stripHtml(wpPost.title.rendered),
     slug: wpPost.slug,
-    image: getImageUrl(wpPost, 'large'),
+    image,
     author: getAuthorName(wpPost),
     date: formatDate(wpPost.date),
     readTime: calculateReadTime(wpPost.content.rendered),
@@ -58,11 +78,11 @@ export function transformArticle(wpPost: WPPost): WPArticle {
   }
 }
 
-export function transformArticles(wpPosts: WPPost[]): WPArticle[] {
-  return wpPosts.map(transformArticle)
+export function transformArticles(wpPosts: WPPost[], mediaById?: Record<number, string>): WPArticle[] {
+  return wpPosts.map((post) => transformArticle(post, mediaById))
 }
 
-export function transformBook(wpPost: WPPost): WPBook {
+export function transformBook(wpPost: WPPost, mediaById?: Record<number, string>): WPBook {
   const acf = wpPost.acf || {}
 
   return {
@@ -70,7 +90,7 @@ export function transformBook(wpPost: WPPost): WPBook {
     title: stripHtml(wpPost.title.rendered),
     fullTitle: acf.full_title || stripHtml(wpPost.title.rendered),
     slug: wpPost.slug,
-    image: getImageUrl(wpPost, 'full'),
+    image: mediaById?.[wpPost.featured_media] || getImageUrl(wpPost, 'full'),
     year: acf.year || '',
     author: acf.author || 'Eduardo Quive',
     genre: acf.genre || 'Literatura',
@@ -81,8 +101,8 @@ export function transformBook(wpPost: WPPost): WPBook {
   }
 }
 
-export function transformBooks(wpPosts: WPPost[]): WPBook[] {
-  return wpPosts.map(transformBook)
+export function transformBooks(wpPosts: WPPost[], mediaById?: Record<number, string>): WPBook[] {
+  return wpPosts.map((post) => transformBook(post, mediaById))
 }
 
 export function transformEvent(wpPost: WPPost): WPEvent {

@@ -9,11 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as CuradoriaRouteImport } from './routes/curadoria'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as BiografiaRouteImport } from './routes/biografia'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogPostIdRouteImport } from './routes/blog.$postId'
 
+const CuradoriaRoute = CuradoriaRouteImport.update({
+  id: '/curadoria',
+  path: '/curadoria',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BlogRoute = BlogRouteImport.update({
   id: '/blog',
   path: '/blog',
@@ -29,6 +36,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => BlogRoute,
+} as any)
 const BlogPostIdRoute = BlogPostIdRouteImport.update({
   id: '/$postId',
   path: '/$postId',
@@ -39,37 +51,63 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/biografia': typeof BiografiaRoute
   '/blog': typeof BlogRouteWithChildren
+  '/curadoria': typeof CuradoriaRoute
   '/blog/$postId': typeof BlogPostIdRoute
+  '/blog/': typeof BlogIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/biografia': typeof BiografiaRoute
-  '/blog': typeof BlogRouteWithChildren
+  '/curadoria': typeof CuradoriaRoute
   '/blog/$postId': typeof BlogPostIdRoute
+  '/blog': typeof BlogIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/biografia': typeof BiografiaRoute
   '/blog': typeof BlogRouteWithChildren
+  '/curadoria': typeof CuradoriaRoute
   '/blog/$postId': typeof BlogPostIdRoute
+  '/blog/': typeof BlogIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/biografia' | '/blog' | '/blog/$postId'
+  fullPaths:
+    | '/'
+    | '/biografia'
+    | '/blog'
+    | '/curadoria'
+    | '/blog/$postId'
+    | '/blog/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/biografia' | '/blog' | '/blog/$postId'
-  id: '__root__' | '/' | '/biografia' | '/blog' | '/blog/$postId'
+  to: '/' | '/biografia' | '/curadoria' | '/blog/$postId' | '/blog'
+  id:
+    | '__root__'
+    | '/'
+    | '/biografia'
+    | '/blog'
+    | '/curadoria'
+    | '/blog/$postId'
+    | '/blog/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BiografiaRoute: typeof BiografiaRoute
   BlogRoute: typeof BlogRouteWithChildren
+  CuradoriaRoute: typeof CuradoriaRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/curadoria': {
+      id: '/curadoria'
+      path: '/curadoria'
+      fullPath: '/curadoria'
+      preLoaderRoute: typeof CuradoriaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/blog': {
       id: '/blog'
       path: '/blog'
@@ -91,6 +129,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog/': {
+      id: '/blog/'
+      path: '/'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof BlogRoute
+    }
     '/blog/$postId': {
       id: '/blog/$postId'
       path: '/$postId'
@@ -103,10 +148,12 @@ declare module '@tanstack/react-router' {
 
 interface BlogRouteChildren {
   BlogPostIdRoute: typeof BlogPostIdRoute
+  BlogIndexRoute: typeof BlogIndexRoute
 }
 
 const BlogRouteChildren: BlogRouteChildren = {
   BlogPostIdRoute: BlogPostIdRoute,
+  BlogIndexRoute: BlogIndexRoute,
 }
 
 const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
@@ -115,6 +162,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BiografiaRoute: BiografiaRoute,
   BlogRoute: BlogRouteWithChildren,
+  CuradoriaRoute: CuradoriaRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

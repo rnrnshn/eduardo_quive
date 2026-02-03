@@ -249,17 +249,19 @@ cp .env.example .env
 Edit `.env` with your WordPress site details:
 
 ```env
-# WordPress REST API endpoint
-VITE_WP_API_URL=https://your-wordpress-site.com/wp-json/wp/v2
+# WordPress URL (site root or REST API URL)
+VITE_WP_URL=https://your-wordpress-site.com
 
-# WordPress site URL (for links and absolute URLs)
-VITE_WP_SITE_URL=https://your-wordpress-site.com
+# WordPress Application Password (Basic Auth)
+VITE_WP_USER=your_username
+VITE_WP_APP_PASSWORD=your_app_password
 ```
 
 **Important:**
 - Replace `your-wordpress-site.com` with your actual WordPress domain
-- If WordPress is on localhost, use: `http://localhost:8888/wp-json/wp/v2` (adjust port as needed)
+- If WordPress is on localhost, use: `http://localhost:8888` (adjust port as needed)
 - If using HTTPS, ensure SSL certificate is valid
+- If you use an Application Password, keep spaces as shown or remove them; the frontend will strip spaces automatically
 
 ---
 
@@ -507,8 +509,7 @@ API response doesn't include `acf` object
 
 1. **Set Production Environment Variables**:
    ```env
-   VITE_WP_API_URL=https://your-production-wordpress.com/wp-json/wp/v2
-   VITE_WP_SITE_URL=https://your-production-wordpress.com
+   VITE_WP_URL=https://your-production-wordpress.com
    ```
 
 2. **Build for Production**:

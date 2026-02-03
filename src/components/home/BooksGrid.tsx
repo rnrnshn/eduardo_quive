@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import BookModal from './BookModal'
-import { useRouteContext } from '@tanstack/react-router'
+import { useLoaderData } from '@tanstack/react-router'
+import type { HomeLoaderData } from '@/lib/wp/types'
 
 export default function BooksGrid() {
-  const { books } = useRouteContext({ from: '/' })
+  const { books } = useLoaderData({ from: '/' }) as HomeLoaderData
   const [selectedBook, setSelectedBook] = useState(books?.[0] || null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -13,7 +14,7 @@ export default function BooksGrid() {
   }
 
   return (
-    <section className="w-full bg-off-white text-rich-black py-24 px-6 min-h-screen flex flex-col justify-center" data-theme="light">
+    <section id="livros" className="w-full bg-off-white text-rich-black py-24 px-6 min-h-screen flex flex-col justify-center" data-theme="light">
       <div className="w-full max-w-[1800px] mx-auto">
         <h2 className="font-display text-[10vw] md:text-[6vw] leading-none tracking-tighter mb-4 uppercase text-left">
           LIVROS
@@ -28,12 +29,16 @@ export default function BooksGrid() {
               onClick={() => openModal(book)}
               className="group block text-left relative overflow-hidden transition-all duration-500 hover:translate-y-[-8px] cursor-pointer"
             >
-              <div className="aspect-[2/3] w-full overflow-hidden shadow-lg group-hover:shadow-2xl transition-shadow duration-500 border border-gray-100">
-                <img 
-                  src={book.image} 
-                  alt={book.title} 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                />
+              <div className="aspect-[2/3] w-full overflow-hidden shadow-lg group-hover:shadow-2xl transition-shadow duration-500 border border-gray-100 bg-off-white">
+                {book.image ? (
+                  <img 
+                    src={book.image} 
+                    alt={book.title} 
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gray-100" aria-hidden="true" />
+                )}
               </div>
               
               <div className="mt-4">
@@ -61,4 +66,3 @@ export default function BooksGrid() {
     </section>
   )
 }
-
