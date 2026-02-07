@@ -5,19 +5,18 @@ import BooksGrid from '@/components/home/BooksGrid'
 import BlogGrid from '@/components/home/BlogGrid'
 import EventsTimeline from '@/components/home/EventsTimeline'
 import PressList from '@/components/home/PressList'
-import { fetchArticles, fetchBooks, fetchEvents, fetchPress, fetchBiography } from '@/lib/wp/fetchers'
+import { fetchArticles, fetchBooks, fetchEvents, fetchPress } from '@/lib/wp/fetchers'
 
 export const Route = createFileRoute('/')({
   loader: async () => {
-    const [articles, books, events, press, biography] = await Promise.all([
+    const [articles, books, events, press] = await Promise.all([
       fetchArticles({ per_page: 6 }),
       fetchBooks(),
       fetchEvents(),
       fetchPress(),
-      fetchBiography(),
     ])
 
-    return { articles, books, events, press, biography }
+    return { articles, books, events, press, biography: null }
   },
   component: App,
 })
@@ -34,5 +33,4 @@ function App() {
     </>
   )
 }
-
 

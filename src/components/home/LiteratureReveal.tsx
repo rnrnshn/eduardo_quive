@@ -1,17 +1,15 @@
 import { useScroll, useTransform, motion, MotionValue } from 'framer-motion'
 import { useRef } from 'react'
-import { Link, useLoaderData } from '@tanstack/react-router'
-import type { HomeLoaderData } from '@/lib/wp/types'
+import { Link } from '@tanstack/react-router'
 
 export default function LiteratureReveal() {
-  const { biography } = useLoaderData({ from: '/' }) as HomeLoaderData
   const containerRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end end'],
   })
 
-  const content = biography?.careerSection || ''
+  const content = 'Autor de «A cor da tua sombra» (romance), «Mutiladas» (contos), «Para onde foram os vivos» (poesia); assina a co-organização edição quatro antologias de ficção, incluindo «Construir amanhã com barro de dentro - vozes do pós-independência», «As pauladas do amor» e ainda o livro de entrevistas «O Abismo aos Pés - 25 escritores respondem sobre a iminência do fim do mundo em 2020». A sua obra «Mutiladas» foi indicada para leitura no ensino secundário nos países de língua portuguesa pelo Instituto Internacional de Língua Portuguesa (IILP).'
   const words = content.split(' ')
 
   return (
