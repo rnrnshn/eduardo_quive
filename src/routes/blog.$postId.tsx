@@ -3,12 +3,14 @@ import { motion } from 'framer-motion'
 import { Link } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import { fetchArticle } from '@/lib/wp/fetchers'
+import BlogPostSkeleton from '@/features/articles/components/BlogPostSkeleton'
 
 export const Route = createFileRoute('/blog/$postId')({
   loader: async ({ params }) => {
     return await fetchArticle(params.postId)
   },
   component: PostPage,
+  pendingComponent: BlogPostSkeleton,
 })
 
 function PostPage() {

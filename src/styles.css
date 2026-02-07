@@ -24,6 +24,7 @@
   width: 50%;
   background: #f59e0b;
   animation: route-pending 1.1s ease-in-out infinite;
+  opacity: 0.6;
 }
 
 @keyframes route-pending {

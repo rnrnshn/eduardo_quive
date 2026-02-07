@@ -8,12 +8,22 @@ type WordPressErrorLike = {
   statusCode?: number
 }
 
+const FAIL_SOFT = import.meta.env.DEV || import.meta.env.VITE_WP_FAIL_SOFT === 'true'
+
 function isWordPressErrorLike(error: unknown): error is WordPressErrorLike {
   return typeof error === 'object' && error !== null && ('code' in error || 'statusCode' in error || 'name' in error)
 }
 
 function isMissingRoute(error: WordPressErrorLike): boolean {
   return error.statusCode === 404 || error.code === 'rest_no_route'
+}
+
+function isNetworkError(error: WordPressErrorLike): boolean {
+  return error.code === 'network_error'
+}
+
+function shouldFallback(error: WordPressErrorLike): boolean {
+  return isMissingRoute(error) || (FAIL_SOFT && isNetworkError(error))
 }
 
 function getEmbeddedMediaUrl(post: WPPost): string | null {
@@ -60,7 +70,7 @@ export async function fetchArticles(params?: Record<string, string | number>): P
     return transformArticles(wpPosts, mediaById)
   } catch (error) {
     console.error('Error fetching articles:', error)
-    if (isWordPressErrorLike(error) && isMissingRoute(error)) return []
+    if (isWordPressErrorLike(error) && shouldFallback(error)) return []
     throw error
   }
 }
@@ -74,7 +84,7 @@ export async function fetchArticlesWithPagination(params?: Record<string, string
     return { articles: transformArticles(data, mediaById), total, totalPages }
   } catch (error) {
     console.error('Error fetching articles:', error)
-    if (isWordPressErrorLike(error) && isMissingRoute(error)) return { articles: [], total: 0, totalPages: 1 }
+    if (isWordPressErrorLike(error) && shouldFallback(error)) return { articles: [], total: 0, totalPages: 1 }
     throw error
   }
 }
@@ -96,7 +106,7 @@ export async function fetchArticle(idOrSlug: number | string): Promise<WPArticle
     return transformArticle(wpPosts as WPPost, mediaById)
   } catch (error) {
     console.error('Error fetching article:', error)
-    if (isWordPressErrorLike(error) && isMissingRoute(error)) return null
+    if (isWordPressErrorLike(error) && shouldFallback(error)) return null
     throw error
   }
 }
@@ -108,7 +118,7 @@ export async function fetchBooks(params?: Record<string, string | number>): Prom
     return transformBooks(wpPosts, mediaById)
   } catch (error) {
     console.error('Error fetching books:', error)
-    if (isWordPressErrorLike(error) && isMissingRoute(error)) return []
+    if (isWordPressErrorLike(error) && shouldFallback(error)) return []
     throw error
   }
 }
@@ -130,7 +140,7 @@ export async function fetchBook(idOrSlug: number | string): Promise<WPBook | nul
     return transformBooks([wpPosts as WPPost], mediaById)[0]
   } catch (error) {
     console.error('Error fetching book:', error)
-    if (isWordPressErrorLike(error) && isMissingRoute(error)) return null
+    if (isWordPressErrorLike(error) && shouldFallback(error)) return null
     throw error
   }
 }
@@ -151,7 +161,7 @@ export async function fetchEvents(params?: Record<string, string | number>): Pro
     return [...upcoming, ...past]
   } catch (error) {
     console.error('Error fetching events:', error)
-    if (isWordPressErrorLike(error) && isMissingRoute(error)) return []
+    if (isWordPressErrorLike(error) && shouldFallback(error)) return []
     throw error
   }
 }
@@ -171,7 +181,7 @@ export async function fetchEvent(idOrSlug: number | string): Promise<WPEvent | n
     return transformEvents([wpPosts as WPPost])[0]
   } catch (error) {
     console.error('Error fetching event:', error)
-    if (isWordPressErrorLike(error) && isMissingRoute(error)) return null
+    if (isWordPressErrorLike(error) && shouldFallback(error)) return null
     throw error
   }
 }
@@ -182,7 +192,7 @@ export async function fetchPress(params?: Record<string, string | number>): Prom
     return transformPressItems(wpPosts)
   } catch (error) {
     console.error('Error fetching press items:', error)
-    if (isWordPressErrorLike(error) && isMissingRoute(error)) return []
+    if (isWordPressErrorLike(error) && shouldFallback(error)) return []
     throw error
   }
 }
@@ -202,7 +212,7 @@ export async function fetchPressItem(idOrSlug: number | string): Promise<WPPress
     return transformPressItems([wpPosts as WPPost])[0]
   } catch (error) {
     console.error('Error fetching press item:', error)
-    if (isWordPressErrorLike(error) && isMissingRoute(error)) return null
+    if (isWordPressErrorLike(error) && shouldFallback(error)) return null
     throw error
   }
 }
@@ -218,7 +228,7 @@ export async function fetchBiography(): Promise<WPBiography | null> {
     return null
   } catch (error) {
     console.error('Error fetching biography:', error)
-    if (isWordPressErrorLike(error) && isMissingRoute(error)) return null
+    if (isWordPressErrorLike(error) && shouldFallback(error)) return null
     throw error
   }
 }
@@ -234,7 +244,7 @@ export async function fetchPage(slug: string): Promise<WPPost | null> {
     return null
   } catch (error) {
     console.error('Error fetching page:', error)
-    if (isWordPressErrorLike(error) && isMissingRoute(error)) return null
+    if (isWordPressErrorLike(error) && shouldFallback(error)) return null
     throw error
   }
 }

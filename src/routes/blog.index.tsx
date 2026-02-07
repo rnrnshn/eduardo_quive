@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Link } from '@tanstack/react-router'
 import { fetchArticlesWithPagination } from '@/lib/wp/fetchers'
+import BlogListSkeleton from '@/features/articles/components/BlogListSkeleton'
 
 export const Route = createFileRoute('/blog/')({
   loaderDeps: ({ search }) => ({
@@ -11,6 +12,7 @@ export const Route = createFileRoute('/blog/')({
     return await fetchArticlesWithPagination({ page, per_page: 12 })
   },
   component: BlogPage,
+  pendingComponent: BlogListSkeleton,
   validateSearch: (search: Record<string, unknown> | undefined) => ({
     page: typeof search?.page === 'number'
       ? search.page

@@ -1,22 +1,4 @@
-import { useEffect } from 'react'
-import Lenis from 'lenis'
-
 export default function Hero() {
-  useEffect(() => {
-    const lenis = new Lenis()
-
-    function raf(time: number) {
-      lenis.raf(time)
-      requestAnimationFrame(raf)
-    }
-
-    requestAnimationFrame(raf)
-
-    return () => {
-      lenis.destroy()
-    }
-  }, [])
-
   return (
     <section className="relative w-full h-screen font-display overflow-hidden" data-theme="light">
       {/* Background Layer */}

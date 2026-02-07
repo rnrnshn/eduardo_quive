@@ -4,6 +4,7 @@ import { TanStackDevtools } from '@tanstack/react-devtools'
 
 import Header from '../components/Header'
 import Footer from '../components/Footer'
+import SmoothScroll from '../components/SmoothScroll'
 
 import appCss from '../styles.css?url'
 
@@ -48,6 +49,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
+        <SmoothScroll />
         <Header />
         {children}
         <Footer />
