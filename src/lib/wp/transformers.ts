@@ -11,6 +11,10 @@ function stripHtml(html: string): string {
   return html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim()
 }
 
+function getRendered(value: { rendered?: string } | null | undefined): string {
+  return typeof value?.rendered === 'string' ? value.rendered : ''
+}
+
 function formatDate(dateString: string): string {
   const date = new Date(dateString)
   return date.toLocaleDateString('pt-PT', {
@@ -177,20 +181,64 @@ function getAcfImageUrl(
   return ''
 }
 
+function getAcfValue(acf: Record<string, any>, keys: string[]): string {
+  for (const key of keys) {
+    const value = acf[key]
+    if (typeof value === 'string' && value.trim()) return value.trim()
+  }
+  return ''
+}
+
+function parseEventDate(rawValue: string): Date | null {
+  if (!rawValue) return null
+
+  const trimmed = rawValue.trim()
+
+  // ISO or RFC date formats
+  const direct = new Date(trimmed)
+  if (!Number.isNaN(direct.getTime())) return direct
+
+  // YYYYMMDD from ACF date picker
+  if (/^\d{8}$/.test(trimmed)) {
+    const year = Number.parseInt(trimmed.slice(0, 4), 10)
+    const month = Number.parseInt(trimmed.slice(4, 6), 10)
+    const day = Number.parseInt(trimmed.slice(6, 8), 10)
+    if (year && month && day) return new Date(Date.UTC(year, month - 1, day))
+  }
+
+  // DD/MM/YYYY
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(trimmed)) {
+    const [day, month, year] = trimmed.split('/').map((part) => Number.parseInt(part, 10))
+    if (year && month && day) return new Date(Date.UTC(year, month - 1, day))
+  }
+
+  return null
+}
+
+function normalizeEventType(rawValue: string): 'upcoming' | 'past' | '' {
+  const value = rawValue.toLowerCase().trim()
+  if (!value) return ''
+  if (value === 'upcoming' || value === 'proximo' || value === 'próximo' || value === 'futuro') return 'upcoming'
+  if (value === 'past' || value === 'passado' || value === 'anterior') return 'past'
+  return ''
+}
+
 export function transformArticle(wpPost: WPPost, mediaById?: Record<number, string>): WPArticle {
   const imageFromMedia = mediaById?.[wpPost.featured_media] || getImageUrl(wpPost, 'large')
-  const image = imageFromMedia || getFirstImageFromHtml(wpPost.content?.rendered || '')
+  const contentRendered = getRendered(wpPost.content)
+  const image = imageFromMedia || getFirstImageFromHtml(contentRendered)
+  const title = stripHtml(getRendered(wpPost.title))
 
   return {
     id: wpPost.id,
-    title: stripHtml(wpPost.title.rendered),
+    title,
     slug: wpPost.slug,
     image,
     author: getAuthorName(wpPost),
     date: formatDate(wpPost.date),
-    readTime: calculateReadTime(wpPost.content.rendered),
+    readTime: calculateReadTime(contentRendered),
     category: getCategoryName(wpPost),
-    content: wpPost.content.rendered
+    content: contentRendered
   }
 }
 
@@ -200,8 +248,8 @@ export function transformArticles(wpPosts: WPPost[], mediaById?: Record<number, 
 
 export function transformBook(wpPost: WPPost, mediaById?: Record<number, string>): WPBook {
   const acf = wpPost.acf || {}
-  const title = stripHtml(wpPost.title.rendered)
-  const excerptFallback = stripHtml(wpPost.excerpt.rendered)
+  const title = stripHtml(getRendered(wpPost.title))
+  const excerptFallback = stripHtml(getRendered(wpPost.excerpt))
   const acfImage = getAcfImageUrl(acf, wpPost, mediaById)
   const featuredImage = mediaById?.[wpPost.featured_media] || getImageUrl(wpPost, 'full')
   const image = acfImage || featuredImage
@@ -229,18 +277,24 @@ export function transformBooks(wpPosts: WPPost[], mediaById?: Record<number, str
 export function transformEvent(wpPost: WPPost): WPEvent {
   const acf = wpPost.acf || {}
 
-  const eventDate = new Date(acf.date || wpPost.date)
+  const rawDate = getAcfValue(acf, ['date', 'data']) || wpPost.date
+  const parsedDate = parseEventDate(rawDate) || new Date(wpPost.date)
   const now = new Date()
-  const isPast = eventDate < now
+  const isPast = parsedDate.getTime() < now.getTime()
+  const explicitType = normalizeEventType(getAcfValue(acf, ['type', 'tipo']))
+
+  const description = getAcfValue(acf, ['description', 'descricao'])
+    || stripHtml(getRendered(wpPost.content))
+    || stripHtml(getRendered(wpPost.excerpt))
 
   return {
     id: wpPost.id,
-    title: stripHtml(wpPost.title.rendered),
+    title: stripHtml(getRendered(wpPost.title)),
     slug: wpPost.slug,
-    location: acf.location || '',
-    date: acf.date || wpPost.date,
-    description: acf.description || stripHtml(wpPost.excerpt.rendered),
-    type: isPast ? 'past' : 'upcoming'
+    location: getAcfValue(acf, ['location', 'local']),
+    date: parsedDate.toISOString(),
+    description,
+    type: explicitType || (isPast ? 'past' : 'upcoming')
   }
 }
 
@@ -250,15 +304,22 @@ export function transformEvents(wpPosts: WPPost[]): WPEvent[] {
 
 export function transformPress(wpPost: WPPost): WPPress {
   const acf = wpPost.acf || {}
+  const rawDate = getAcfValue(acf, ['date', 'data', 'data_publicacao', 'data_da_publicacao'])
+  const parsedDate = parseEventDate(rawDate) || new Date(wpPost.date)
+  const publication = getAcfValue(acf, ['publication', 'publicacao', 'publicacao_nome', 'fonte']) || 'Imprensa'
+  const url = getAcfValue(acf, ['url', 'link', 'link_do_artigo', 'link_da_noticia']) || '#'
+  const excerpt = getAcfValue(acf, ['excerpt', 'resumo', 'excerto'])
+    || stripHtml(getRendered(wpPost.content))
+    || stripHtml(getRendered(wpPost.excerpt))
 
   return {
     id: wpPost.id,
-    title: stripHtml(wpPost.title.rendered),
+    title: stripHtml(getRendered(wpPost.title)),
     slug: wpPost.slug,
-    publication: acf.publication || 'Imprensa',
-    date: formatDate(wpPost.date),
-    excerpt: stripHtml(wpPost.excerpt.rendered),
-    url: acf.url || '#'
+    publication,
+    date: formatDate(parsedDate.toISOString()),
+    excerpt,
+    url
   }
 }
 
@@ -271,7 +332,7 @@ export function transformBiography(wpPost: WPPost): WPBiography {
 
   return {
     id: wpPost.id,
-    title: stripHtml(wpPost.title.rendered),
+    title: stripHtml(getRendered(wpPost.title)),
     slug: wpPost.slug,
     careerSection: acf.career_section || '',
     publicationsSection: acf.publications_section || '',
