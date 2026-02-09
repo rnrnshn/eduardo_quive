@@ -1,7 +1,33 @@
-import { useState, useEffect } from 'react'
-import { Link } from '@tanstack/react-router'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { Link, useLocation } from '@tanstack/react-router'
 import { motion, useScroll, useMotionValueEvent } from 'framer-motion'
 import ContactModal from './ContactModal'
+
+const THEME_ATTR = 'data-theme'
+
+function resolveHeaderTheme(): 'light' | 'dark' {
+  if (typeof window === 'undefined' || typeof document === 'undefined') return 'light'
+
+  const points = [
+    { x: window.innerWidth * 0.5, y: 16 },
+    { x: window.innerWidth * 0.5, y: 80 },
+    { x: 16, y: 80 },
+    { x: window.innerWidth - 16, y: 80 },
+  ]
+
+  for (const point of points) {
+    const elements = document.elementsFromPoint(point.x, point.y)
+    for (const element of elements) {
+      if (element.closest('header')) continue
+      const themed = element.closest(`[${THEME_ATTR}]`)
+      if (!themed || themed.closest('header')) continue
+      const theme = themed.getAttribute(THEME_ATTR)
+      if (theme === 'dark' || theme === 'light') return theme
+    }
+  }
+
+  return 'light'
+}
 
 export default function Header() {
   const { scrollY } = useScroll()
@@ -9,6 +35,19 @@ export default function Header() {
   const [isContactOpen, setIsContactOpen] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [headerTheme, setHeaderTheme] = useState<'light' | 'dark'>('light')
+  const location = useLocation()
+  const rafId = useRef<number | null>(null)
+  const updateTheme = useCallback(() => {
+    const nextTheme = resolveHeaderTheme()
+    setHeaderTheme((prev) => (prev === nextTheme ? prev : nextTheme))
+  }, [])
+  const scheduleThemeUpdate = useCallback(() => {
+    if (rafId.current !== null) return
+    rafId.current = window.requestAnimationFrame(() => {
+      rafId.current = null
+      updateTheme()
+    })
+  }, [updateTheme])
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     const previous = scrollY.getPrevious() ?? 0
@@ -18,40 +57,48 @@ export default function Header() {
     } else {
       setHidden(false)
     }
+    scheduleThemeUpdate()
   })
 
   useEffect(() => {
-    const observerOptions = {
-      root: null,
-      rootMargin: '-40px 0px -90% 0px',
-      threshold: [0, 0.1]
-    }
+    updateTheme()
+    const raf1 = window.requestAnimationFrame(() => {
+      updateTheme()
+      window.requestAnimationFrame(updateTheme)
+    })
+    return () => window.cancelAnimationFrame(raf1)
+  }, [updateTheme, location.pathname, location.search, location.hash])
 
-    const handleIntersect = (entries: IntersectionObserverEntry[]) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const theme = entry.target.getAttribute('data-theme') as 'light' | 'dark'
-          if (theme) setHeaderTheme(theme)
-        }
-      })
-    }
+  useEffect(() => {
+    const handleResize = () => scheduleThemeUpdate()
+    window.addEventListener('resize', handleResize, { passive: true })
+    return () => window.removeEventListener('resize', handleResize)
+  }, [scheduleThemeUpdate])
 
-    const observer = new IntersectionObserver(handleIntersect, observerOptions)
-    const targets = document.querySelectorAll('section, footer')
-    targets.forEach((target) => observer.observe(target))
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      scheduleThemeUpdate()
+    })
+
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: [THEME_ATTR],
+      childList: true,
+      subtree: true,
+    })
 
     return () => observer.disconnect()
-  }, [])
+  }, [scheduleThemeUpdate])
 
   const isDark = headerTheme === 'dark'
   const textColorClass = isDark ? 'text-off-white' : 'text-rich-black'
   const hoverColorClass = isDark ? 'hover:text-amber-500' : 'hover:text-gray-500'
+  const logoColorClass = isMenuOpen ? 'text-off-white' : textColorClass
 
   const navItems = [
     { label: 'Biografia', to: '/biografia' },
     { label: 'Blog', to: '/blog' },
     { label: 'Livros', to: '/', hash: 'livros' },
-    { label: 'Curadoria', to: '/curadoria' },
     { label: 'Eventos', to: '/', hash: 'eventos' },
     { label: 'Imprensa', to: '/', hash: 'imprensa' },
   ]
@@ -70,7 +117,7 @@ export default function Header() {
         {/* Logo - Still uses mix-blend for the 50/50 split */}
         <Link 
           to="/"
-          className={`font-display font-bold tracking-tighter text-2xl transition-colors mix-blend-difference text-off-white hover:opacity-70`}
+          className={`font-display font-bold tracking-tighter text-2xl transition-colors ${logoColorClass} hover:opacity-70`}
         >
           EQ
         </Link>
