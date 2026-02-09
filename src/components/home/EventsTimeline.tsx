@@ -96,7 +96,7 @@ export default function EventsTimeline() {
               <div className="absolute -bottom-4 -left-4 w-24 h-24 border-b border-l border-amber-500/30"></div>
               
               <img 
-                src="/events-images.jpg" 
+                src="/events-images.webp" 
                 alt="Eduardo Quive em eventos literários" 
                 className="w-full aspect-[4/5] object-cover grayscale-[30%] group-hover:grayscale-0 transition-all duration-700 hover:scale-105"
               />

@@ -19,7 +19,7 @@ export const SITE_NAME = 'Eduardo Quive'
 export const SITE_DESCRIPTION =
   'Jornalista e escritor moçambicano. Ensaios, crónicas e livros que exploram memória, identidade e cultura.'
 export const SITE_LOCALE = 'pt_PT'
-export const DEFAULT_OG_IMAGE = '/hero_image.jpg'
+export const DEFAULT_OG_IMAGE = '/hero_image.webp'
 
 function getSiteUrl(): string {
   const envUrl = import.meta.env.VITE_SITE_URL

@@ -13,7 +13,7 @@ export const blogPosts: BlogPost[] = [
   {
     id: 1,
     title: "A COR DA TUA SOMBRA, romance de Eduardo Quive publicado no Brasil",
-    image: "/post-1.png",
+    image: "/post-1.webp",
     author: "Eduardo Quive",
     date: "15 Janeiro 2024",
     readTime: "5 min leitura",
@@ -31,7 +31,7 @@ export const blogPosts: BlogPost[] = [
   {
     id: 2,
     title: "Filhos do Oceano, de Ruth Bañón e as paisagens da memória",
-    image: "/post-2.jpg",
+    image: "/post-2.webp",
     author: "Eduardo Quive",
     date: "10 Janeiro 2024",
     readTime: "4 min leitura",
@@ -47,7 +47,7 @@ export const blogPosts: BlogPost[] = [
   {
     id: 3,
     title: "Quando o belo se rende à natureza",
-    image: "/post-3.jpg",
+    image: "/post-3.webp",
     author: "Eduardo Quive",
     date: "05 Janeiro 2024",
     readTime: "3 min leitura",
@@ -63,7 +63,7 @@ export const blogPosts: BlogPost[] = [
   {
     id: 4,
     title: "Vozes da Lusofonia: Um olhar sobre o futuro",
-    image: "/post-1.png",
+    image: "/post-1.webp",
     author: "Eduardo Quive",
     date: "01 Janeiro 2024",
     readTime: "6 min leitura",

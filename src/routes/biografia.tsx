@@ -51,8 +51,8 @@ function BiografiaPage() {
       {/* Hero Section */}
       <section className="relative h-[85vh] md:h-[90vh] w-full overflow-hidden flex items-end px-6 md:px-24 pb-12 md:pb-24" data-theme="dark">
         <motion.div style={{ y: y1 }} className="absolute inset-0 z-0">
-          <img 
-            src="/quive-1.jpg" 
+            <img 
+            src="/quive-1.webp" 
             alt="Eduardo Quive" 
             className="w-full h-full object-cover object-top grayscale brightness-75 transition-all duration-1000"
           />
@@ -112,7 +112,7 @@ function BiografiaPage() {
       <section className="relative h-[70vh] md:h-[100vh] w-full overflow-hidden" data-theme="dark">
          <motion.div style={{ y: y2 }} className="absolute inset-0 z-0">
             <img 
-               src="/quive-2.jpg" 
+               src="/quive-2.webp" 
                alt="At the Library" 
                className="w-full h-full object-cover object-top grayscale"
             />
