@@ -27,9 +27,9 @@ export default function BooksGrid() {
             <button
               key={book.id}
               onClick={() => openModal(book)}
-              className="group block text-left relative overflow-hidden transition-all duration-500 hover:translate-y-[-8px] cursor-pointer"
+              className="group block text-left relative overflow-hidden transition-all duration-500 hover:translate-y-[-8px] cursor-pointer h-full flex flex-col"
             >
-              <div className="aspect-[2/3] w-full overflow-hidden shadow-lg group-hover:shadow-2xl transition-shadow duration-500 border border-gray-100 bg-off-white">
+              <div className="aspect-[2/3] w-full overflow-hidden group-hover:shadow-2xl transition-shadow duration-500 border border-gray-100 bg-off-white">
                 {book.image ? (
                   <img 
                     src={book.image} 
@@ -41,17 +41,13 @@ export default function BooksGrid() {
                 )}
               </div>
               
-              <div className="mt-4">
+              <div className="mt-4 flex flex-col flex-1 min-h-[7rem]">
                 <div className="text-xs font-sans uppercase tracking-[0.2em] text-amber-600 mb-1 font-bold">
-                  {book.genre}
+                  {book.genre} - {book.year}
                 </div>
-                <h3 className="font-display text-lg leading-tight tracking-tight mb-1 group-hover:text-amber-700 transition-colors uppercase">
+                <h3 className="font-display text-lg leading-tight tracking-tight mb-2 group-hover:text-amber-700 transition-colors uppercase line-clamp-2">
                   {book.title}
                 </h3>
-                
-                <div className="text-sm font-sans text-gray-400 tracking-wide font-medium">
-                  {book.year}
-                </div>
               </div>
             </button>
           ))}

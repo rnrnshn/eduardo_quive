@@ -33,17 +33,81 @@ function getEmbeddedMediaUrl(post: WPPost): string | null {
 
 const invalidMediaIds = new Set<number>()
 
-async function resolveFeaturedMedia(posts: WPPost[]): Promise<Record<number, string>> {
-  const ids = posts
-    .map((post) => post.featured_media)
-    .filter((id) => typeof id === 'number' && id > 0)
+const BOOK_IMAGE_ACF_KEYS = [
+  'image',
+  'imagem',
+  'capa',
+  'cover',
+  'book_cover',
+  'book_image',
+  'imagem_capa',
+  'cover_image',
+]
+
+function extractAcfImageIds(acf: Record<string, any> | undefined, keys: string[]): number[] {
+  if (!acf) return []
+
+  const values = keys
+    .map((key) => acf[key])
+    .filter((value) => value !== undefined && value !== null)
+
+  const ids: number[] = []
+
+  const collect = (value: unknown) => {
+    if (Array.isArray(value)) {
+      value.forEach(collect)
+      return
+    }
+
+    if (typeof value === 'number' && Number.isFinite(value) && value > 0) {
+      ids.push(value)
+      return
+    }
+
+    if (typeof value === 'string') {
+      const trimmed = value.trim()
+      if (/^\d+$/.test(trimmed)) {
+        const parsed = Number.parseInt(trimmed, 10)
+        if (Number.isFinite(parsed) && parsed > 0) ids.push(parsed)
+      }
+      return
+    }
+
+    if (value && typeof value === 'object') {
+      const record = value as Record<string, unknown>
+      const candidate = record.id ?? record.ID
+      if (typeof candidate === 'number' && candidate > 0) ids.push(candidate)
+      if (typeof candidate === 'string' && /^\d+$/.test(candidate)) ids.push(Number.parseInt(candidate, 10))
+    }
+  }
+
+  values.forEach(collect)
+  return ids
+}
+
+async function resolveFeaturedMedia(posts: WPPost[], extraIds: number[] = []): Promise<Record<number, string>> {
+  const embeddedById: Record<number, string> = {}
+
+  posts.forEach((post) => {
+    const embeddedUrl = getEmbeddedMediaUrl(post)
+    if (embeddedUrl && typeof post.featured_media === 'number' && post.featured_media > 0) {
+      embeddedById[post.featured_media] = embeddedUrl
+    }
+  })
+
+  const ids = [
+    ...posts.map((post) => post.featured_media),
+    ...extraIds,
+  ]
+    .filter((id): id is number => typeof id === 'number' && id > 0)
     .filter((id) => !invalidMediaIds.has(id))
-    .filter((id, index, list) => list.indexOf(id) === index)
-    .filter((id) => !posts.some((post) => post.featured_media === id && getEmbeddedMediaUrl(post)))
 
-  if (ids.length === 0) return {}
+  const uniqueIds = Array.from(new Set(ids))
+  const idsToFetch = uniqueIds.filter((id) => !embeddedById[id])
 
-  const entries = await Promise.all(ids.map(async (id) => {
+  if (idsToFetch.length === 0) return embeddedById
+
+  const entries = await Promise.all(idsToFetch.map(async (id) => {
     try {
       const media = await wpFetch<WPMedia>(ENDPOINTS.media.byId(id))
       return [id, media.source_url || ''] as const
@@ -60,7 +124,7 @@ async function resolveFeaturedMedia(posts: WPPost[]): Promise<Record<number, str
   return entries.reduce<Record<number, string>>((acc, [id, url]) => {
     if (url) acc[id] = url
     return acc
-  }, {})
+  }, { ...embeddedById })
 }
 
 export async function fetchArticles(params?: Record<string, string | number>): Promise<WPArticle[]> {
@@ -114,7 +178,8 @@ export async function fetchArticle(idOrSlug: number | string): Promise<WPArticle
 export async function fetchBooks(params?: Record<string, string | number>): Promise<WPBook[]> {
   try {
     const wpPosts: WPPost[] = await wpFetch(ENDPOINTS.books.list(params))
-    const mediaById = await resolveFeaturedMedia(wpPosts)
+    const acfImageIds = wpPosts.flatMap((post) => extractAcfImageIds(post.acf, BOOK_IMAGE_ACF_KEYS))
+    const mediaById = await resolveFeaturedMedia(wpPosts, acfImageIds)
     return transformBooks(wpPosts, mediaById)
   } catch (error) {
     console.error('Error fetching books:', error)
