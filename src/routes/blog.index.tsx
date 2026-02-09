@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Link } from '@tanstack/react-router'
 import { fetchArticlesWithPagination } from '@/lib/wp/fetchers'
 import BlogListSkeleton from '@/features/articles/components/BlogListSkeleton'
+import { buildSeo } from '@/lib/seo'
 
 export const Route = createFileRoute('/blog/')({
   loaderDeps: ({ search }) => ({
@@ -10,6 +11,19 @@ export const Route = createFileRoute('/blog/')({
   loader: async ({ search }) => {
     const page = search?.page ?? 1
     return await fetchArticlesWithPagination({ page, per_page: 12 })
+  },
+  head: ({ location }) => {
+    const pathname = location?.pathname || '/blog'
+    const seo = buildSeo({
+      title: 'Blog',
+      description: 'Ensaios, reflexões e crónicas sobre literatura, arte e os dias que correm.',
+      url: pathname,
+      type: 'website',
+    })
+
+    return {
+      meta: seo.meta,
+    }
   },
   component: BlogPage,
   pendingComponent: BlogListSkeleton,

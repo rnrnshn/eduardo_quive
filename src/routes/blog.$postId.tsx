@@ -4,10 +4,49 @@ import { Link } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import { fetchArticle } from '@/lib/wp/fetchers'
 import BlogPostSkeleton from '@/features/articles/components/BlogPostSkeleton'
+import { buildSeo, SITE_DESCRIPTION, stripHtml, truncate, toAbsoluteUrl } from '@/lib/seo'
 
 export const Route = createFileRoute('/blog/$postId')({
   loader: async ({ params }) => {
     return await fetchArticle(params.postId)
+  },
+  head: ({ loaderData, location }) => {
+    const post = loaderData
+    const pathname = location?.pathname || '/blog'
+    const description = post
+      ? truncate(stripHtml(post.content || ''), 160)
+      : SITE_DESCRIPTION
+    const seo = buildSeo({
+      title: post?.title || 'Artigo',
+      description,
+      image: post?.image,
+      url: pathname,
+      type: 'article',
+      author: post?.author,
+      publishedTime: post?.dateISO,
+      jsonLd: post
+        ? {
+            '@context': 'https://schema.org',
+            '@type': 'Article',
+            headline: post.title,
+            author: {
+              '@type': 'Person',
+              name: post.author,
+            },
+            datePublished: post.dateISO,
+            dateModified: post.dateISO,
+            image: post.image ? [toAbsoluteUrl(post.image)] : undefined,
+            mainEntityOfPage: {
+              '@type': 'WebPage',
+              '@id': toAbsoluteUrl(pathname),
+            },
+          }
+        : undefined,
+    })
+
+    return {
+      meta: seo.meta,
+    }
   },
   component: PostPage,
   pendingComponent: BlogPostSkeleton,

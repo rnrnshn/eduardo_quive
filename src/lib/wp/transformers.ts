@@ -236,6 +236,7 @@ export function transformArticle(wpPost: WPPost, mediaById?: Record<number, stri
     image,
     author: getAuthorName(wpPost),
     date: formatDate(wpPost.date),
+    dateISO: wpPost.date,
     readTime: calculateReadTime(contentRendered),
     category: getCategoryName(wpPost),
     content: contentRendered

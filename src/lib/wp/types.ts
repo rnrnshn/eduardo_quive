@@ -118,6 +118,7 @@ export interface WPArticle {
   image: string
   author: string
   date: string
+  dateISO?: string
   readTime: string
   category: string
   content: string

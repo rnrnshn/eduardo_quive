@@ -3,10 +3,31 @@ import { Link } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import { fetchPage } from '@/lib/wp/fetchers'
 import type { WPPost } from '@/lib/wp/types'
+import { buildSeo, SITE_DESCRIPTION, stripHtml, truncate } from '@/lib/seo'
 
 export const Route = createFileRoute('/curadoria')({
   loader: async () => {
     return await fetchPage('curadoria')
+  },
+  head: ({ loaderData, location }) => {
+    const pathname = location?.pathname || '/curadoria'
+    const title = loaderData?.title?.rendered
+      ? stripHtml(loaderData.title.rendered)
+      : 'Curadoria'
+    const description = loaderData?.content?.rendered
+      ? truncate(stripHtml(loaderData.content.rendered), 160)
+      : SITE_DESCRIPTION
+
+    const seo = buildSeo({
+      title,
+      description,
+      url: pathname,
+      type: 'website',
+    })
+
+    return {
+      meta: seo.meta,
+    }
   },
   component: CuradoriaPage,
 })

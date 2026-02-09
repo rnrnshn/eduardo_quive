@@ -2,10 +2,36 @@ import { createFileRoute } from '@tanstack/react-router'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { useEffect } from 'react'
 import { fetchBiography } from '@/lib/wp/fetchers'
+import { buildSeo, SITE_DESCRIPTION, SITE_NAME, stripHtml, truncate, toAbsoluteUrl } from '@/lib/seo'
 
 export const Route = createFileRoute('/biografia')({
   loader: async () => {
     return await fetchBiography()
+  },
+  head: ({ loaderData, location }) => {
+    const pathname = location?.pathname || '/biografia'
+    const summarySource = loaderData?.careerSection || loaderData?.publicationsSection || ''
+    const description = summarySource
+      ? truncate(stripHtml(summarySource), 160)
+      : SITE_DESCRIPTION
+
+    const seo = buildSeo({
+      title: 'Biografia',
+      description,
+      url: pathname,
+      type: 'profile',
+      jsonLd: {
+        '@context': 'https://schema.org',
+        '@type': 'Person',
+        name: SITE_NAME,
+        description,
+        url: toAbsoluteUrl(pathname),
+      },
+    })
+
+    return {
+      meta: seo.meta,
+    }
   },
   component: BiografiaPage,
 })
