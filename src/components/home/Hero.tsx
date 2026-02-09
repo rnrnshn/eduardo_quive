@@ -7,7 +7,7 @@ export default function Hero() {
         <div className="w-full h-1/2 md:h-full md:w-1/2 bg-rich-black relative order-2 md:order-1">
           <div className="absolute inset-0 z-0">
             <img 
-              src="/hero_image.jpg" 
+              src="/hero_image.webp" 
               alt="Portrait" 
               className="w-full h-full object-cover opacity-80 grayscale mix-blend-luminosity"
             />
