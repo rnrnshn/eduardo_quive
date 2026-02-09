@@ -58,7 +58,7 @@ export default function BookModal({ book, isOpen, onClose }: BookModalProps) {
 
               {/* Left Column: Image */}
               <div className="w-full md:w-2/5 h-full bg-gray-100 flex items-center justify-center p-8 md:p-12">
-                <div className="w-full aspect-[2/3] relative shadow-2xl">
+                <div className="w-full aspect-[2/3] relative">
                   <img 
                     src={book.image} 
                     alt={book.title} 
@@ -68,7 +68,7 @@ export default function BookModal({ book, isOpen, onClose }: BookModalProps) {
               </div>
 
               {/* Right Column: Details */}
-              <div className="w-full md:w-3/5 p-8 md:p-16 flex flex-col justify-center">
+              <div className="w-full md:w-3/5 p-8 md:p-16 flex flex-col">
                 <div className="space-y-8">
                   <div>
                     <div className="flex flex-wrap items-center gap-4 text-xs font-sans uppercase tracking-[0.2em] text-gray-500 mb-4">
@@ -77,7 +77,7 @@ export default function BookModal({ book, isOpen, onClose }: BookModalProps) {
                       {book.year && <span>{book.year}</span>}
                     </div>
                     
-                    <h2 className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.1] tracking-tight mb-2">
+                    <h2 className="font-display text-xl md:text-4xl leading-[1.1] tracking-tight mb-2">
                       {book.fullTitle || book.title}
                     </h2>
                     
