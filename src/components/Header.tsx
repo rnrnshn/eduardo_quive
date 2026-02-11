@@ -172,7 +172,7 @@ export default function Header() {
               hash={item.hash}
               preload="intent"
               onClick={() => setIsMenuOpen(false)}
-              className="text-off-white font-display text-5xl font-bold tracking-tighter uppercase leading-none"
+              className="text-off-white font-display text-3xl font-bold tracking-tighter uppercase leading-none"
             >
               {item.label}
             </Link>
