@@ -182,7 +182,7 @@ export default function Header() {
               setIsContactOpen(true)
               setIsMenuOpen(false)
             }}
-            className="text-amber-500 font-display text-5xl font-bold tracking-tighter uppercase text-left leading-none"
+            className="text-amber-500 font-display text-3xl font-bold tracking-tighter uppercase text-left leading-none"
           >
             Fale Comigo
           </button>
