@@ -50,7 +50,7 @@ function CuradoriaPage() {
   }
 
   const title = page.title?.rendered
-    ? page.title.rendered.replace(/<[^>]*>/g, '')
+    ? stripHtml(page.title.rendered)
     : 'Curadoria'
 
   return (

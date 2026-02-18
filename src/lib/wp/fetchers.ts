@@ -217,7 +217,7 @@ export async function fetchEvents(params?: Record<string, string | number>): Pro
 
     const upcoming = events
       .filter(e => e.type === 'upcoming')
-      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 
     const past = events
       .filter(e => e.type === 'past')

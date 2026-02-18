@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { SOCIAL_LINKS } from '@/lib/social-links'
 
 interface ContactModalProps {
   isOpen: boolean
@@ -89,7 +90,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                 <div className="mt-12 md:mt-0">
                   <h4 className="text-xs uppercase tracking-widest text-amber-500 mb-4">Redes Sociais</h4>
                   <div className="flex flex-col gap-3 font-medium">
-                    <a href="#" className="hover:text-amber-400 transition-colors">LinkedIn</a>
+                    <a href={SOCIAL_LINKS.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-amber-400 transition-colors">LinkedIn</a>
                     <a href="#" className="hover:text-amber-400 transition-colors">Instagram</a>
                     <a href="#" className="hover:text-amber-400 transition-colors">Facebook</a>
                   </div>

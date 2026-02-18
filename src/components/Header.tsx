@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { Link, useLocation } from '@tanstack/react-router'
 import { motion, useScroll, useMotionValueEvent } from 'framer-motion'
 import ContactModal from './ContactModal'
+import { SOCIAL_LINKS } from '@/lib/social-links'
 
 const THEME_ATTR = 'data-theme'
 
@@ -112,7 +113,7 @@ export default function Header() {
         }}
         animate={hidden ? "hidden" : "visible"}
         transition={{ duration: 0.35, ease: "easeInOut" }}
-        className={`fixed top-0 left-0 w-full p-6 flex justify-between md:justify-between items-center z-50 transition-colors duration-300 ${isMenuOpen ? 'text-off-white' : ''}`}
+        className={`fixed top-0 left-0 w-full px-4 py-4 sm:px-6 sm:py-6 flex justify-between items-center z-50 transition-colors duration-300 ${isMenuOpen ? 'text-off-white' : ''}`}
       >
         {/* Logo - Still uses mix-blend for the 50/50 split */}
         <Link 
@@ -123,21 +124,21 @@ export default function Header() {
         </Link>
 
         {/* Desktop Navigation - Follows theme detection */}
-        <nav className={`hidden md:flex gap-6 text-lg tracking-tight uppercase font-bold ${textColorClass}`}>
+        <nav className={`hidden lg:flex lg:gap-4 xl:gap-6 lg:text-base xl:text-lg tracking-tight uppercase font-bold ${textColorClass}`}>
           {navItems.map((item) => (
             <Link 
               key={item.label} 
               to={item.to}
               hash={item.hash}
               preload="intent"
-              className={`font-bold text-lg tracking-tight transition-colors uppercase ${hoverColorClass}`}
+              className={`font-bold lg:text-base xl:text-lg tracking-tight transition-colors uppercase whitespace-nowrap ${hoverColorClass}`}
             >
               {item.label}
             </Link>
           ))}
           <button 
             onClick={() => setIsContactOpen(true)}
-            className={`font-bold text-lg tracking-tight transition-colors uppercase cursor-pointer ${hoverColorClass}`}
+            className={`font-bold lg:text-base xl:text-lg tracking-tight transition-colors uppercase cursor-pointer whitespace-nowrap ${hoverColorClass}`}
           >
             Fale Comigo
           </button>
@@ -146,7 +147,7 @@ export default function Header() {
         {/* Mobile Menu Button - Follows theme detection */}
         <button 
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className={`md:hidden z-50 p-2 ${isMenuOpen ? 'text-off-white' : textColorClass}`}
+          className={`lg:hidden z-50 p-2 ${isMenuOpen ? 'text-off-white' : textColorClass}`}
           aria-label="Toggle menu"
         >
           <div className="w-8 h-4 flex flex-col justify-between items-end">
@@ -162,7 +163,7 @@ export default function Header() {
         initial={{ x: "100%" }}
         animate={{ x: isMenuOpen ? "0%" : "100%" }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className="fixed inset-0 bg-rich-black z-[45] md:hidden flex flex-col p-8 pt-32"
+        className="fixed inset-0 bg-rich-black z-[45] lg:hidden flex flex-col p-8 pt-32"
       >
         <nav className="flex flex-col gap-8">
           {navItems.map((item) => (
@@ -192,7 +193,7 @@ export default function Header() {
           <p>Eduardo Quive &copy; {new Date().getFullYear()}</p>
           <div className="flex gap-4">
             <a href="#">Instagram</a>
-            <a href="#">LinkedIn</a>
+            <a href={SOCIAL_LINKS.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>
           </div>
         </div>
       </motion.div>

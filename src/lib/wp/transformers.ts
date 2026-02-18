@@ -1,15 +1,6 @@
 import type { WPPost, WPMedia, WPUser } from './types'
 import type { WPArticle, WPBook, WPEvent, WPPress, WPBiography } from './types'
-
-function stripHtml(html: string): string {
-  if (typeof window !== 'undefined' && typeof document !== 'undefined') {
-    const tmp = document.createElement('DIV')
-    tmp.innerHTML = html
-    return tmp.textContent || tmp.innerText || ''
-  }
-
-  return html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim()
-}
+import { decodeHtmlEntities, stripHtml } from '../text'
 
 function getRendered(value: { rendered?: string } | null | undefined): string {
   return typeof value?.rendered === 'string' ? value.rendered : ''
@@ -53,14 +44,14 @@ function getFirstImageFromHtml(html: string): string {
 
 function getAuthorName(post: WPPost): string {
   if (post._embedded?.author?.[0]?.name) {
-    return post._embedded.author[0].name
+    return decodeHtmlEntities(post._embedded.author[0].name)
   }
   return 'Eduardo Quive'
 }
 
 function getCategoryName(post: WPPost): string {
   if (post._embedded?.['wp:term']?.[0]?.[0]?.name) {
-    return post._embedded['wp:term'][0][0].name
+    return decodeHtmlEntities(post._embedded['wp:term'][0][0].name)
   }
   return 'Artigo'
 }
@@ -79,16 +70,16 @@ const BOOK_IMAGE_ACF_KEYS = [
 function getAcfString(acf: Record<string, any>, keys: string[], fallback = ''): string {
   for (const key of keys) {
     const value = acf[key]
-    if (typeof value === 'string' && value.trim()) return value
+    if (typeof value === 'string' && value.trim()) return decodeHtmlEntities(value.trim())
   }
-  return fallback
+  return decodeHtmlEntities(fallback)
 }
 
 function normalizeBuyingInfo(value: unknown): string[] {
   if (Array.isArray(value)) {
     return value
       .map((item) => {
-        if (typeof item === 'string') return item.trim()
+        if (typeof item === 'string') return decodeHtmlEntities(item.trim())
         if (item && typeof item === 'object') {
           const record = item as Record<string, unknown>
           const candidates = [
@@ -100,7 +91,7 @@ function normalizeBuyingInfo(value: unknown): string[] {
             record.value,
           ]
           for (const candidate of candidates) {
-            if (typeof candidate === 'string' && candidate.trim()) return candidate.trim()
+            if (typeof candidate === 'string' && candidate.trim()) return decodeHtmlEntities(candidate.trim())
           }
         }
         return ''
@@ -108,7 +99,7 @@ function normalizeBuyingInfo(value: unknown): string[] {
       .filter((item): item is string => item.length > 0)
   }
 
-  if (typeof value === 'string' && value.trim()) return [value.trim()]
+  if (typeof value === 'string' && value.trim()) return [decodeHtmlEntities(value.trim())]
   return []
 }
 
@@ -184,7 +175,7 @@ function getAcfImageUrl(
 function getAcfValue(acf: Record<string, any>, keys: string[]): string {
   for (const key of keys) {
     const value = acf[key]
-    if (typeof value === 'string' && value.trim()) return value.trim()
+    if (typeof value === 'string' && value.trim()) return decodeHtmlEntities(value.trim())
   }
   return ''
 }
