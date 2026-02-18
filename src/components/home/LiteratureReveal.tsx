@@ -18,11 +18,7 @@ export default function LiteratureReveal() {
       ref={containerRef}
       data-theme="light"
     >
-      <div className="max-w-4xl w-full sticky top-[100px] md:top-[200px] h-fit py-[10vh]">
-        <h2 className="font-display text-[10vw] md:text-[5vw] leading-none tracking-tighter mb-8 uppercase text-left">
-          BIOGRAFIA
-        </h2>
-        
+      <div className="max-w-4xl w-full sticky top-[100px] md:top-[200px] h-fit py-[10vh]">      
         <div className="font-sans text-xl md:text-2xl leading-[1.2] md:leading-relaxed tracking-tight md:tracking-wide text-left flex flex-wrap gap-x-2 gap-y-1 font-bold md:font-normal">
           {words.map((word, i) => {
             const start = i / words.length

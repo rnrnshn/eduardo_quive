@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router'
+import { SOCIAL_LINKS } from '@/lib/social-links'
 
 export default function Footer() {
   return (
@@ -53,7 +54,7 @@ export default function Footer() {
             <div className="flex flex-col gap-6">
               <h3 className="font-sans text-xs text-gray-500 uppercase tracking-[0.2em]">Social</h3>
               <nav className="flex flex-col gap-3 font-sans text-gray-300">
-                <a href="#" className="hover:text-off-white transition-colors text-lg">LinkedIn</a>
+                <a href={SOCIAL_LINKS.linkedin} target="_blank" rel="noopener noreferrer" className="hover:text-off-white transition-colors text-lg">LinkedIn</a>
                 <a href="#" className="hover:text-off-white transition-colors text-lg">Instagram</a>
                 <a href="#" className="hover:text-off-white transition-colors text-lg">Facebook</a>
                 <a href="#" className="hover:text-off-white transition-colors text-lg">Twitter</a>

@@ -1,4 +1,7 @@
 import type { MetaDescriptor, RouteLinkEntry } from '@tanstack/react-router'
+import { stripHtml } from './text'
+
+export { stripHtml }
 
 type SeoInput = {
   title?: string
@@ -48,11 +51,6 @@ export function formatTitle(title?: string): string {
   if (!title) return SITE_NAME
   if (title.toLowerCase() === SITE_NAME.toLowerCase()) return SITE_NAME
   return `${title} — ${SITE_NAME}`
-}
-
-export function stripHtml(html: string): string {
-  if (!html) return ''
-  return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
 }
 
 export function truncate(text: string, maxLength = 160): string {
